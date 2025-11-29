@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Inicio{% endblock %}
+
+{% block content %}
+<div class="p-5 mb-4 bg-light rounded-3 text-center">
+    <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold">¡Encuentra a tu Nuevo Mejor Amigo!</h1>
+        <p class="fs-4">Cientos de perritos y gatitos en Panamá esperan por un hogar. Dale una segunda oportunidad.</p>
+        <a class="btn btn-primary btn-lg me-2" href="{% url 'mascotas:listado_perros' %}">Ver Perros 🐶</a>
+        <a class="btn btn-success btn-lg" href="{% url 'mascotas:listado_gatos' %}">Ver Gatos 🐱</a>
+    </div>
+</div>
+
+<h2 class="mt-5 mb-4 text-center">Últimas Mascotas Disponibles</h2>
+
+<div class="row row-cols-1 row-cols-md-4 g-4">
+    {% for mascota in ultimas_mascotas %}
+    <div class="col">
+        <div class="card h-100">
+            <img src="{{ mascota.imagen_principal.url }}" class="card-img-top" alt="{{ mascota.nombre }}" style="height: 200px; object-fit: cover;">
+            <div class="card-body">
+                <h5 class="card-title">{{ mascota.nombre }} ({{ mascota.get_especie_display }})</h5>
+                <p class="card-text">{{ mascota.raza }} | {{ mascota.edad_anos }} años</p>
+                <a href="#" class="btn btn-sm btn-info">Ver Detalle</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p class="text-center w-100">No hay mascotas disponibles por el momento.</p>
+    {% endfor %}
+</div>
+{% endblock %}

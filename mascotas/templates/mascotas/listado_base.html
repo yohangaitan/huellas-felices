@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Listado de Adopción{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">
+    {% if view.kwargs.filter == 'Perro' %}
+        🐶 Perros en Adopción
+    {% elif view.kwargs.filter == 'Gato' %}
+        🐱 Gatos en Adopción
+    {% else %}
+        Mascotas en Adopción
+    {% endif %}
+</h1>
+
+<div class="mb-4 p-3 bg-light border rounded">
+    <h4>Filtros Rápidos</h4>
+    <p>Próximamente: Filtros por Tamaño, Edad, y Sexo.</p>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+    {% for mascota in mascotas_disponibles %}
+    <div class="col">
+        <div class="card h-100 shadow-sm">
+            <img src="{{ mascota.imagen_principal.url }}" class="card-img-top" alt="{{ mascota.nombre }}" style="height: 250px; object-fit: cover;">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">{{ mascota.nombre }}</h5>
+                <p class="card-text mb-1">
+                    <span class="badge bg-secondary">{{ mascota.get_especie_display }}</span>
+                    <span class="badge bg-info text-dark">{{ mascota.get_tamano_display }}</span>
+                </p>
+                <p class="text-muted">{{ mascota.raza }} | {{ mascota.edad_anos }} años</p>
+                
+                <a href="{% url 'mascotas:detalle' pk=mascota.pk %}" class="mt-auto btn btn-primary">¡Me Interesa!</a>
+                
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    {% endfor %}
+</div>
+
+{% endblock %}
