@@ -21,7 +21,7 @@ El desarrollo de Huellas Felices tiene como fin demostrar la competencia en los 
 
 * **Backend:** Python 3.x, Django 5.x
 * **Base de Datos:** SQLite3 (Desarrollo), PostgreSQL/MySQL (Producción futura)
-* **Frontend:** HTML5, CSS3, JavaScript, Bootstrap (o Bulma, Tailwind, etc.)
+* **Frontend:** HTML5, CSS3, JavaScript, Bootstrap (o Tailwind, etc.)
 
 ## 🚀 Guía de Instalación y Ejecución
 
