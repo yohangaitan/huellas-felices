@@ -1,0 +1,20 @@
+# Base de datos de SQLite
+*.sqlite3
+
+# Directorios de Python/Django
+__pycache__/
+*.pyc
+
+# Archivos de entorno virtual
+venv/
+venv_*
+
+# Archivos de medios subidos por el usuario
+/media/
+
+# Archivos de configuración secretos (si los usas)
+.env
+
+# Archivos del sistema operativo (macOS/Windows)
+.DS_Store
+Thumbs.db
