@@ -35,50 +35,6 @@ Abre tu terminal y clona el proyecto:
 ```bash
 git clone [https://github.com/yohangaitan/huellas-felices.git](https://github.com/yohangaitan/huellas-felices.git)
 cd huellas-felices
-
-¡Excelente idea! Un buen archivo README.md es fundamental para que otros (y tu yo futuro) puedan entender, configurar y ejecutar tu proyecto huellas-felices.
-
-Aquí tienes un README.md completo y actualizado que cubre la configuración de Django, la instalación de dependencias, y las nuevas funcionalidades que implementamos.
-
-Markdown
-
-# 🐾 Huellas Felices
-
-Un sistema de gestión de mascotas en adopción desarrollado con Django y Tailwind CSS.
-
----
-
-## 🚀 Funcionalidades Principales (Estado Actual)
-
-Este proyecto implementa las funcionalidades base de un sitio de adopción, con un enfoque en la gestión segura por parte del publicador:
-
-1.  **Publicación y Listado de Mascotas:** Creación, visualización y filtrado básico de mascotas.
-2.  **Gestión Segura (CRUD):**
-    * **Edición y Eliminación Segura:** Solo el usuario que publicó una mascota puede editarla o eliminarla (protegido con `UserPassesTestMixin`).
-3.  **Gestión de Perfil:** Los usuarios pueden crear y editar su información de contacto (integración con el modelo `UserProfile`).
-4.  **Sistema de Solicitudes:**
-    * Los adoptantes pueden enviar formularios de interés por cada mascota.
-    * Los publicadores tienen un panel de **"Solicitudes Recibidas"** que muestra los datos de contacto del adoptante.
-    * **Notificaciones:** El menú de usuario muestra el conteo total de solicitudes pendientes (`Solicitudes (X)`).
-
----
-
-## ⚙️ Configuración y Ejecución del Proyecto
-
-Sigue estos pasos para descargar, configurar el entorno y ejecutar la aplicación web en tu máquina local.
-
-### 1. Requisitos Previos
-
-* **Python 3.8+** (Recomendado Python 3.10 o superior)
-* **Git**
-
-### 2. Clonar el Repositorio
-
-Abre tu terminal y clona el proyecto:
-
-```bash
-git clone [https://github.com/yohangaitan/huellas-felices.git](https://github.com/yohangaitan/huellas-felices.git)
-cd huellas-felices
 3. Configurar el Entorno Virtual (Recomendado)
 Crea un entorno virtual para aislar las dependencias del proyecto:
 
