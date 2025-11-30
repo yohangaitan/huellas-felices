@@ -16,8 +16,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+from mascotas.views import SignUpView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('mascotas.urls')),
+    # Incluir las URLs de Autenticación de Django
+    # Mapea todas las rutas de auth (login, logout, etc.) bajo el prefijo 'login/'
+    path('login/', include('django.contrib.auth.urls')),
+    path('signup/', SignUpView.as_view(), name='signup'),
 ]
+
+# Configuración necesaria para servir archivos de usuario (imágenes) en desarrollo
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

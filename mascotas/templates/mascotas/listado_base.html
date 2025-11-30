@@ -1,43 +1,96 @@
-{% extends 'base.html' %}
+{% extends 'mascotas/base.html' %}
 
 {% block title %}Listado de Adopción{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">
-    {% if view.kwargs.filter == 'Perro' %}
-        🐶 Perros en Adopción
-    {% elif view.kwargs.filter == 'Gato' %}
-        🐱 Gatos en Adopción
-    {% else %}
-        Mascotas en Adopción
-    {% endif %}
+<h1 class="mb-4 text-4xl font-extrabold text-gray-800">
+    {% if view.kwargs.filter == 'Perro' %}
+        🐶 Perros en Adopción
+    {% elif view.kwargs.filter == 'Gato' %}
+        🐱 Gatos en Adopción
+    {% else %}
+        Mascotas en Adopción
+    {% endif %}
 </h1>
 
-<div class="mb-4 p-3 bg-light border rounded">
-    <h4>Filtros Rápidos</h4>
-    <p>Próximamente: Filtros por Tamaño, Edad, y Sexo.</p>
+<div class="mb-6 p-4 bg-white border border-gray-200 rounded-lg shadow-md">
+    <h4 class="text-xl font-semibold mb-3 text-gray-700">Filtrar y Buscar</h4>
+    
+    <form method="GET" class="space-y-4 lg:space-y-0 lg:flex lg:space-x-4">
+        
+        <div class="flex-grow">
+            <input type="text" name="q" placeholder="Buscar por nombre o raza..." 
+                   value="{{ query }}" 
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+        </div>
+
+        <div>
+            <select name="tamano" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                <option value="">Tamaño</option>
+                {% for key, value in TAMANO_CHOICES %}
+                    <option value="{{ key }}" {% if key == tamano_seleccionado %}selected{% endif %}>
+                        {{ value }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <select name="edad" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                <option value="">Edad</option>
+                {% for key, value in EDAD_CHOICES %}
+                    <option value="{{ key }}" {% if key == edad_seleccionada %}selected{% endif %}>
+                        {{ value }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <select name="region" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                <option value="">Provincia</option>
+                {% for key, value in REGION_CHOICES %}
+                    <option value="{{ key }}" {% if key == region_seleccionada %}selected{% endif %}>
+                        {{ value }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <button type="submit" class="w-full lg:w-auto px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition">
+            <i class="bi bi-funnel"></i> Aplicar
+        </button>
+        
+        {% if query or tamano_seleccionado or edad_seleccionada or region_seleccionada %}
+            <a href="." class="w-full lg:w-auto px-6 py-2 bg-gray-400 text-white font-semibold rounded-lg hover:bg-gray-500 transition text-center">
+                Limpiar
+            </a>
+        {% endif %}
+    </form>
 </div>
+
 
 <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
-    {% for mascota in mascotas_disponibles %}
-    <div class="col">
-        <div class="card h-100 shadow-sm">
-            <img src="{{ mascota.imagen_principal.url }}" class="card-img-top" alt="{{ mascota.nombre }}" style="height: 250px; object-fit: cover;">
-            <div class="card-body d-flex flex-column">
-                <h5 class="card-title">{{ mascota.nombre }}</h5>
-                <p class="card-text mb-1">
-                    <span class="badge bg-secondary">{{ mascota.get_especie_display }}</span>
-                    <span class="badge bg-info text-dark">{{ mascota.get_tamano_display }}</span>
-                </p>
-                <p class="text-muted">{{ mascota.raza }} | {{ mascota.edad_anos }} años</p>
-                
-                <a href="{% url 'mascotas:detalle' pk=mascota.pk %}" class="mt-auto btn btn-primary">¡Me Interesa!</a>
-                
-            </div>
-        </div>
-    </div>
-    {% empty %}
-    {% endfor %}
+    {% for mascota in mascotas_disponibles %}
+    <div class="col">
+        <div class="card h-100 shadow-sm">
+            <img src="{{ mascota.imagen.url }}" class="card-img-top" alt="{{ mascota.nombre }}" style="height: 250px; object-fit: cover;">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">{{ mascota.nombre }}</h5>
+                <p class="card-text mb-1">
+                    <span class="badge bg-secondary">{{ mascota.get_especie_display }}</span>
+                    <span class="badge bg-info text-dark">{{ mascota.get_tamano_display }}</span>
+                </p>
+                <p class="text-muted">{{ mascota.raza }} | {{ mascota.get_edad_display }} | {{ mascota.get_region_display }}</p>
+                
+                <a href="{% url 'mascotas:detalle_mascota' pk=mascota.pk %}" class="mt-auto btn btn-primary">¡Me Interesa!</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+        <div class="col-12 mt-5 text-center text-muted">
+            <p class="lead">No se encontraron mascotas que coincidan con tu búsqueda.</p>
+        </div>
+    {% endfor %}
 </div>
-
 {% endblock %}

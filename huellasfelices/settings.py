@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mascotas.apps.MascotasConfig',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
@@ -55,13 +56,15 @@ ROOT_URLCONF = 'huellasfelices.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'mascotas' / 'templates'],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'mascotas.context_processors.solicitudes_pendientes_count',
             ],
         },
     },
@@ -124,3 +127,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Redirecciona al usuario a la URL 'home' después de iniciar sesión con éxito.
+LOGIN_REDIRECT_URL = '/' 
+
+# Especifica la URL a la que deben ser redirigidos los usuarios no autenticados 
+# cuando intentan acceder a una página protegida (como '/publicar/').
+LOGIN_URL = 'login'
+LOGOUT_REDIRECT_URL = 'login'
+LOGIN_REDIRECT_URL = '/'

@@ -1,0 +1,77 @@
+{% extends 'mascotas/base.html' %}
+
+{% block title %}Mis Publicaciones{% endblock %}
+
+{% block content %}
+<h1 class="text-3xl font-bold mb-6 text-gray-800 border-b pb-2">
+    Mis Publicaciones
+</h1>
+
+{% if mis_mascotas %}
+    
+    <div class="space-y-6">
+    {% for mascota in mis_mascotas %}
+        
+        <div class="bg-white p-4 rounded-xl shadow-lg flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-6">
+            
+            <div class="flex-shrink-0">
+                <img src="{{ mascota.imagen.url }}" alt="{{ mascota.nombre }}" class="w-24 h-24 object-cover rounded-lg shadow">
+            </div>
+
+            <div class="flex-grow">
+                <h2 class="text-xl font-semibold text-indigo-600">
+                    <a href="{% url 'mascotas:detalle_mascota' pk=mascota.pk %}" class="hover:underline">
+                        {{ mascota.nombre }}
+                    </a>
+                </h2>
+                <p class="text-sm text-gray-500">
+                    {{ mascota.raza }} | {{ mascota.get_genero_display }} | {{ mascota.get_edad_display }}
+                </p>
+                <p class="text-xs text-gray-400 mt-1">
+                    Publicado el {{ mascota.fecha_publicacion|date:"d M, Y" }}
+                </p>
+            </div>
+
+            <div class="flex-shrink-0 text-center">
+                <span class="text-xs font-bold uppercase block mb-1 text-gray-600">Estado</span>
+                {% if mascota.estado_adopcion == 'D' %}
+                    <span class="px-3 py-1 bg-green-500 text-white text-sm font-semibold rounded-full shadow">Disponible</span>
+                {% elif mascota.estado_adopcion == 'P' %}
+                    <span class="px-3 py-1 bg-yellow-500 text-white text-sm font-semibold rounded-full shadow">En Proceso</span>
+                {% else %}
+                    <span class="px-3 py-1 bg-red-500 text-white text-sm font-semibold rounded-full shadow">Adoptado</span>
+                {% endif %}
+            </div>
+
+            <div class="flex-shrink-0 flex space-x-2">
+                <a href="{% url 'mascotas:editar_mascota' pk=mascota.pk %}" 
+                   class="p-2 text-blue-600 border border-blue-600 rounded-full hover:bg-blue-50 transition" 
+                   title="Editar">
+                   <i class="bi bi-pencil-square text-lg"></i>
+                </a>
+                
+                <a href="{% url 'mascotas:eliminar_mascota' pk=mascota.pk %}" 
+                   class="p-2 text-red-600 border border-red-600 rounded-full hover:bg-red-50 transition" 
+                   title="Eliminar">
+                   <i class="bi bi-trash-fill text-lg"></i>
+                </a>
+            </div>
+            
+        </div>
+        
+    {% endfor %}
+    </div>
+
+{% else %}
+    <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-lg" role="alert">
+        <p class="font-bold">Aún no has publicado mascotas.</p>
+        <p>Utiliza el botón "Publicar Mascota" para empezar a buscar un hogar.</p>
+    </div>
+{% endif %}
+
+<div class="mt-8 text-center">
+    <a href="{% url 'mascotas:publicar_mascota' %}" class="bg-orange-500 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-orange-600 transition shadow-lg">
+        <i class="bi bi-plus-circle mr-2"></i> Publicar Nueva Mascota
+    </a>
+</div>
+{% endblock %}

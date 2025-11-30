@@ -1,62 +1,162 @@
-# mascotas/models.py
-
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.conf import settings
 
-#Create your models here.
+# --- Nuevas Opciones de Edad y Región ---
+EDAD_CHOICES = [
+    ('CACHORRO', 'Cachorro'),
+    ('JOVEN', 'Joven'),
+    ('ADULTO', 'Adulto'),
+]
+
+REGION_CHOICES = [
+    ('PANAMA', 'Panamá'),
+    ('PANAMA_OESTE', 'Panamá Oeste'),
+    ('COLON', 'Colón'),
+    ('LOS_SANTOS', 'Los Santos'),
+    ('COCLE', 'Coclé'),
+    ('VERAGUAS', 'Veraguas'),
+    ('DARIEN', 'Darién'),
+    ('CHIRIQUI', 'Chiriquí'),
+    ('HERRERA', 'Herrera'), # Añadimos Herrera, si aplica
+    ('BOCAS_DEL_TORO', 'Bocas del Toro'), # Añadimos Bocas del Toro, si aplica
+    ('COMARCA', 'Comarca Indígena'),
+]
+
+
+# Create your models here.
 class Mascota(models.Model):
-    # --- Opciones (Choices) para asegurar datos consistentes ---
+    # --- 1. Definición de Choices (Constantes para los filtros) ---
     
-    ESPECIE_CHOICES = [
-        ('Perro', 'Perro'),
-        ('Gato', 'Gato'),
-    ]
     TAMANO_CHOICES = [
         ('P', 'Pequeño'),
         ('M', 'Mediano'),
         ('G', 'Grande'),
     ]
-    ESTADO_CHOICES = [
-        ('D', 'Disponible'),
-        ('P', 'En Proceso'),
-        ('A', 'Adoptado'),
+    
+    EDAD_CHOICES = [
+        ('C', 'Cachorro (0-1 año)'),
+        ('J', 'Joven (1-7 años)'),
+        ('A', 'Adulto (+7 años)'),
+    ]
+
+    REGION_CHOICES = [
+        ('Panamá', 'Panamá'),
+        ('Panamá Oeste', 'Panamá Oeste'),
+        ('Colón', 'Colón'),
+        ('Los Santos', 'Los Santos'),
+        ('Coclé', 'Coclé'),
+        ('Veraguas', 'Veraguas'),
+        ('Darién', 'Darién'),
+        ('Chiriquí', 'Chiriquí'),
     ]
     
-    # --- Información Básica ---
-    nombre = models.CharField(max_length=100)
-    especie = models.CharField(max_length=5, choices=ESPECIE_CHOICES)
-    raza = models.CharField(max_length=100, blank=True, default='Mestizo')
-    genero = models.CharField(max_length=1, choices=[('M', 'Macho'), ('H', 'Hembra')])
+    GENERO_CHOICES = [
+        ('Macho', 'Macho'),
+        ('Hembra', 'Hembra'),
+    ]
     
-    # --- Características ---
-    edad_anos = models.IntegerField(verbose_name="Edad (años aproximados)")
-    tamano = models.CharField(max_length=1, choices=TAMANO_CHOICES)
-    descripcion = models.TextField(help_text="Historia, personalidad y necesidades de la mascota.")
+    ESPECIE_CHOICES = [
+        ('Perro', 'Perro'),
+        ('Gato', 'Gato'),
+    ]
+
+    ESTADO_CHOICES = [
+        ('D', 'Disponible'),
+        ('P', 'Pendiente de adopción'),
+        ('A', 'Adoptado'),
+    ]
+
+    # --- 2. Campos del Modelo ---
     
-    # --- Medios y Control ---
-    imagen_principal = models.ImageField(
-        upload_to='mascotas_fotos/',
-        help_text="Foto principal de la mascota."
+    # Llave foránea al usuario que publica la mascota
+    publicado_por = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name='mascotas_publicadas'
     )
     
-    # --- Adopción y Publicación ---
-    estado_adopcion = models.CharField(max_length=1, choices=ESTADO_CHOICES, default='D')
-    fecha_publicacion = models.DateTimeField(auto_now_add=True)
+    nombre = models.CharField(max_length=100)
     
-    # Relación con el publicador (Rescatista/Organización)
-    # Por ahora, usamos el modelo de Usuario por defecto de Django
-    publicado_por = models.ForeignKey(User, on_delete=models.CASCADE)
+    # Campos que usan los Choices
+    especie = models.CharField(max_length=5, choices=ESPECIE_CHOICES)
+    genero = models.CharField(max_length=6, choices=GENERO_CHOICES)
+    tamano = models.CharField(max_length=1, choices=TAMANO_CHOICES)
+    edad = models.CharField(max_length=1, choices=EDAD_CHOICES)
+    region = models.CharField(max_length=50, choices=REGION_CHOICES)
+    estado_adopcion = models.CharField(max_length=1, choices=ESTADO_CHOICES, default='D')
+    
+    # Otros campos
+    raza = models.CharField(max_length=100, default='Mestizo', blank=True)
+    descripcion = models.TextField()
+    imagen = models.ImageField(upload_to='mascotas_fotos/', blank=True, null=True)
+    fecha_publicacion = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.nombre} ({self.especie})"
 
     class Meta:
         verbose_name = "Mascota"
         verbose_name_plural = "Mascotas"
-        ordering = ['-fecha_publicacion'] # Ordenar por las más nuevas primero
+        ordering = ['-fecha_publicacion']
+    
+    class SolicitudAdopcion(models.Model):
+        mascota = models.ForeignKey('Mascota', on_delete=models.CASCADE, related_name='solicitudes')
+        solicitante = models.ForeignKey(User, on_delete=models.CASCADE, related_name='solicitudes_enviadas')
+    
+        nombre_completo = models.CharField(max_length=150)
+        correo_electronico = models.EmailField()
+        telefono = models.CharField(max_length=20, blank=True, null=True)
+    
+        mensaje = models.TextField(help_text="Cuéntale al publicador por qué quieres adoptar a esta mascota.")
+    
+        fecha_solicitud = models.DateTimeField(auto_now_add=True)
+    
+        def __str__(self):
+            return f"Solicitud de {self.nombre_completo} para {self.mascota.nombre}"
+
+        class Meta:
+            verbose_name = "Solicitud de Adopción"
+            verbose_name_plural = "Solicitudes de Adopción"
+            ordering = ['-fecha_solicitud']
+
+class SolicitudAdopcion(models.Model):
+    mascota = models.ForeignKey('Mascota', on_delete=models.CASCADE, related_name='solicitudes')
+    
+    # Usuario solicitante. Se hizo null=True para ser flexible.
+    solicitante = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='solicitudes_enviadas', null=True, blank=True)
+    
+    nombre_completo = models.CharField(max_length=150)
+    correo_electronico = models.EmailField()
+    telefono = models.CharField(max_length=20, blank=True, null=True)
+    
+    mensaje = models.TextField(help_text="Cuéntale al publicador por qué quieres adoptar a esta mascota.")
+    
+    fecha_solicitud = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"Solicitud de {self.nombre_completo} para {self.mascota.nombre}"
+
+    class Meta:
+        verbose_name = "Solicitud de Adopción"
+        verbose_name_plural = "Solicitudes de Adopción"
+        ordering = ['-fecha_solicitud']
+
+# Perfil de Usuario
+class UserProfile(models.Model):
+    # Relación uno a uno con el modelo de Usuario de Django
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
+    
+    # Campo para almacenar el número de WhatsApp
+    telefono_whatsapp = models.CharField(
+        max_length=20, 
+        blank=True, 
+        null=True, 
+        help_text="Tu número de teléfono para ser contactado por WhatsApp (ej: 5076xxxxxx)"
+    )
+    
+    # Puedes añadir otros campos de perfil aquí (ej. dirección, biografía, foto de perfil)
 
     def __str__(self):
-        return self.nombre
-
-    def get_absolute_url(self):
-        # Esta función será útil más adelante para redirigir tras la creación
-        # Necesitaremos crear la URL 'detalle_mascota' primero
-        return reverse('mascotas:detalle', args=[str(self.id)])
+        return f"Perfil de {self.user.username}"

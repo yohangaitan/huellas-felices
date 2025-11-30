@@ -1,0 +1,28 @@
+{% extends 'mascotas/base.html' %}
+
+{% block title %}Eliminar Mascota{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto p-6 bg-white rounded-lg shadow-xl">
+    <h1 class="text-3xl font-bold text-red-600 mb-4">Confirmar Eliminación</h1>
+    <p class="text-gray-700 mb-6">¿Estás seguro de que deseas eliminar la publicación de la mascota: <strong class="font-extrabold text-lg">{{ mascota.nombre }}</strong>?</p>
+    
+    <div class="p-4 bg-red-50 border-l-4 border-red-500 text-red-700 mb-6" role="alert">
+        <p class="font-bold">Advertencia:</p>
+        <p>Esta acción es irreversible. Se borrarán todos los datos y la imagen de la mascota.</p>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="flex justify-between items-center">
+            <button type="submit" class="px-6 py-2 bg-red-600 text-white font-bold rounded-md hover:bg-red-700 transition duration-150">
+                Sí, Eliminar Publicación
+            </button>
+            
+            <a href="{% url 'mascotas:detalle_mascota' pk=mascota.pk %}" class="px-6 py-2 bg-gray-200 text-gray-800 font-bold rounded-md hover:bg-gray-300 transition duration-150">
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}
