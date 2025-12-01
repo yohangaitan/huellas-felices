@@ -132,7 +132,6 @@ MEDIA_ROOT = BASE_DIR / 'media'
 LOGIN_REDIRECT_URL = '/' 
 
 # Especifica la URL a la que deben ser redirigidos los usuarios no autenticados 
-# cuando intentan acceder a una página protegida (como '/publicar/').
 LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = 'login'
 LOGIN_REDIRECT_URL = '/'

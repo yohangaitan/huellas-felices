@@ -1,0 +1,57 @@
+{% extends "mascotas/base.html" %}
+
+{% block title %}Mis Solicitudes Enviadas{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-4 md:p-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6 border-b pb-2">
+        <i class="bi bi-send-check-fill mr-2 text-blue-600"></i> Mis Solicitudes Enviadas
+    </h1>
+
+    {% if mis_solicitudes %}
+        <p class="mb-4 text-gray-600">Has enviado un total de <strong>{{ mis_solicitudes|length }}</strong> solicitudes de adopción.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for solicitud in mis_solicitudes %}
+            <div class="bg-white p-5 rounded-xl shadow-lg border {% if solicitud.mascota.estado_adopcion == 'D' %}border-green-300{% else %}border-gray-200{% endif %} hover:shadow-xl transition">
+                
+                <h2 class="text-xl font-bold text-gray-800 mb-2">
+                    <a href="{% url 'mascotas:detalle_mascota' pk=solicitud.mascota.pk %}" class="hover:text-blue-600 transition">
+                        {{ solicitud.mascota.nombre }}
+                    </a>
+                </h2>
+
+                <p class="text-sm text-gray-500 mb-3">
+                    Solicitada el: {{ solicitud.fecha_solicitud|date:"d M Y" }}
+                </p>
+
+                <div class="flex items-center justify-between mb-4 border-t pt-3">
+                    <strong class="text-sm text-gray-600">Estado de la Mascota:</strong>
+                    <span class="px-3 py-1 text-xs font-semibold rounded-full 
+                        {% if solicitud.mascota.estado_adopcion == 'D' %}bg-green-100 text-green-800{% elif solicitud.mascota.estado_adopcion == 'P' %}bg-blue-100 text-blue-800{% else %}bg-red-100 text-red-800{% endif %}">
+                        {{ solicitud.mascota.get_estado_adopcion_display }}
+                    </span>
+                </div>
+                
+                <div class="p-3 bg-gray-50 rounded-lg">
+                    <strong class="block text-sm text-gray-700 mb-1">Publicador:</strong>
+                    <p class="text-xs text-gray-600">
+                        {{ solicitud.mascota.publicado_por.username }}
+                    </p>
+                    {% if solicitud.mascota.publicado_por.profile.telefono_whatsapp %}
+                    <a href="https://wa.me/{{ solicitud.mascota.publicado_por.profile.telefono_whatsapp }}" target="_blank" class="mt-2 inline-block text-xs font-bold text-green-600 hover:text-green-800">
+                        <i class="bi bi-whatsapp"></i> Contactar por WhatsApp
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="p-6 bg-blue-100 border-l-4 border-blue-500 text-blue-700 rounded-lg">
+            <p class="font-bold">¡Aún no has enviado solicitudes!</p>
+            <p>Explora nuestras <a href="{% url 'mascotas:home' %}" class="underline hover:text-blue-900">mascotas en adopción</a> y encuentra a tu nuevo compañero.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock content %}

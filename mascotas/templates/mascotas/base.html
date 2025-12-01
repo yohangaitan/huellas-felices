@@ -7,79 +7,176 @@
     <title>{% block title %}Huellas Felices{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
 </head>
-<body class="bg-gray-50 min-h-screen flex flex-col">
-
-    <nav class="bg-orange-500 shadow-md sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<body class="bg-gray-50 min-h-screen flex flex-col overflow-x-hidden">
+    
+    <div id="mobile-menu-overlay" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"></div>
+    
+    <nav class="bg-orange-500 shadow-md sticky top-0 z-50 relative"> 
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
-
-                <a href="{% url 'mascotas:home' %}" class="flex items-center text-white text-xl font-extrabold tracking-tight">
-                    <i class="bi bi-house-heart-fill mr-2 text-2xl"></i> Huellas Felices
-                </a>
-
-                <div class="flex items-center space-x-6">
-                    <a href="{% url 'mascotas:listado_perros' %}" class="text-white font-semibold hover:text-orange-200 transition duration-150">Perros</a>
-                    <a href="{% url 'mascotas:listado_gatos' %}" class="text-white font-semibold hover:text-orange-200 transition duration-150">Gatos</a>
                 
+                <div class="flex-shrink-0">
+                    <a href="{% url 'mascotas:home' %}" class="text-white text-xl font-bold">
+                        <i class="bi bi-house-door-fill mr-1"></i> Huellas Felices
+                    </a>
+                </div>
+
+                <div class="hidden md:flex space-x-4 items-center">
+                    <a href="{% url 'mascotas:listado_perros' %}" class="text-white hover:bg-orange-600 px-3 py-2 rounded-md text-sm font-medium">Perros</a>
+                    <a href="{% url 'mascotas:listado_gatos' %}" class="text-white hover:bg-orange-600 px-3 py-2 rounded-md text-sm font-medium">Gatos</a>
+                    
+                    <a href="{% url 'mascotas:publicar_mascota' %}" class="bg-yellow-400 text-orange-800 hover:bg-yellow-500 px-3 py-1.5 rounded-full text-sm font-bold transition">
+                        <i class="bi bi-upload mr-1"></i> Publicar Mascota
+                    </a>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    
                     {% if user.is_authenticated %}
+                    <div class="relative hidden md:block" id="user-menu-desktop">
+                        <button class="flex items-center text-white hover:bg-orange-600 px-3 py-2 rounded-md text-sm font-medium" 
+                                id="user-menu-button-desktop">
+                            Hola, {{ user.username }} <i class="bi bi-chevron-down ml-1 text-xs"></i>
+                        </button>
                         
-                        <a href="{% url 'mascotas:publicar_mascota' %}" class="px-3 py-2 bg-yellow-400 text-orange-800 font-bold rounded-lg hover:bg-yellow-300 transition duration-150 flex items-center shadow">
-                            <i class="bi bi-upload mr-2"></i> Publicar Mascota
-                        </a>
-
-                        <div class="relative group h-full flex items-center">
-                            <button class="flex items-center text-white font-bold px-3 py-2 hover:text-orange-200 transition duration-150 h-full">
-                                Hola, {{ user.username }} 
-                                <i class="bi bi-chevron-down ml-1 text-sm"></i>
-                            </button>
-                            <div class="absolute right-0 top-16 w-52 bg-white rounded-md shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 z-50 transform origin-top-right">
-                                
-                                <a href="{% url 'mascotas:editar_perfil' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                    <i class="bi bi-person-fill mr-1"></i> Mi Perfil
-                                </a>
-                                
-                                <a href="{% url 'mascotas:mis_publicaciones' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Mis Publicaciones</a>
-                                <a href="{% url 'mascotas:solicitudes_recibidas' %}" 
-                                    class="block px-4 py-2 text-sm hover:bg-gray-100 
-                                            {% if total_solicitudes_recibidas > 0 %}
-                                                text-green-600 font-bold 
-                                            {% else %}
-                                                text-gray-700
-                                            {% endif %}">
-
-                                    <i class="bi bi-bell-fill mr-1"></i>    
-                                    Solicitudes 
-                                    
-                                    {% if total_solicitudes_recibidas > 0 %}
-                                        ({{ total_solicitudes_recibidas }})
-                                    {% endif %}
-                                </a>
-
-                                <div class="border-t border-gray-100 my-1"></div>
-
-                                <form method="post" action="{% url 'logout' %}">
-                                    {% csrf_token %}
-                                    <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                                        Cerrar Sesión
-                                    </button>
-                                </form>
-                            </div>
+                        <div id="user-menu-dropdown-desktop" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-60 hidden">
+                            <a href="{% url 'mascotas:editar_perfil' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="bi bi-person mr-2"></i> Mi Perfil
+                            </a>
+                            <a href="{% url 'mascotas:mis_publicaciones' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="bi bi-box-seam mr-2"></i> Mis Publicaciones
+                            </a>
+                            <a href="{% url 'mascotas:solicitudes_recibidas' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="bi bi-bell mr-2 text-green-600"></i> Solicitudes (1)
+                            </a>
+                            <div class="border-t border-gray-100 my-1"></div>
+                            <form method="post" action="{% url 'logout' %}" class="block">
+    {% csrf_token %}
+    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100" style="border: none; background: none;">
+        <i class="bi bi-box-arrow-right mr-2"></i> Cerrar Sesión
+    </button>
+</form>
                         </div>
-                        {% else %}
-                        <a href="{% url 'login' %}" class="text-white font-semibold hover:text-orange-200 transition duration-150">Iniciar Sesión</a>
-                        <a href="{% url 'signup' %}" class="text-white font-semibold hover:text-orange-200 transition duration-150">Registrarse</a>
+                    </div>
+                    {% else %}
+                    <div class="hidden md:flex space-x-2">
+                        <a href="{% url 'login' %}" class="text-white hover:bg-orange-600 px-3 py-2 rounded-md text-sm font-medium">Iniciar Sesión</a>
+                        <a href="{% url 'signup' %}" class="text-white bg-orange-600 hover:bg-orange-700 px-3 py-2 rounded-md text-sm font-medium">Registrarse</a>
+                    </div>
                     {% endif %}
+                    
+                    <button id="mobile-menu-button" class="md:hidden text-white hover:text-gray-200 focus:outline-none">
+                        <i id="mobile-menu-icon" class="bi bi-list text-3xl"></i>
+                    </button>
                 </div>
 
             </div>
         </div>
+        
+        <div id="mobile-menu" class="fixed top-0 right-0 h-full w-3/4 max-w-xs bg-orange-600 shadow-xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out md:hidden">
+            
+            <div class="p-4 flex justify-between items-center border-b border-orange-700">
+                <h3 class="text-white text-xl font-bold">Menú</h3>
+            </div>
+
+            <div class="pb-3 space-y-1 sm:px-3 overflow-y-auto h-[calc(100vh-64px)]">
+                
+                {% if user.is_authenticated %}
+                <div class="pt-2 pb-1 text-white text-base font-bold px-3">
+                    Hola, {{ user.username }}
+                </div>
+                
+                <div class="border-t border-orange-700 pt-2 space-y-1">
+                    <a href="{% url 'mascotas:editar_perfil' %}" class="text-white block hover:bg-orange-700 px-3 py-2 rounded-md text-base font-medium">
+                        <i class="bi bi-person mr-2"></i> Mi Perfil
+                    </a>
+                    <a href="{% url 'mascotas:mis_publicaciones' %}" class="text-white block hover:bg-orange-700 px-3 py-2 rounded-md text-base font-medium">
+                        <i class="bi bi-box-seam mr-2"></i> Mis Publicaciones
+                    </a>
+                    <a href="{% url 'mascotas:solicitudes_recibidas' %}" class="text-white block hover:bg-orange-700 px-3 py-2 rounded-md text-base font-medium">
+                        <i class="bi bi-bell mr-2 text-green-600"></i> Solicitudes (1)
+                    </a>
+                    <form method="post" action="{% url 'logout' %}" class="block">
+    {% csrf_token %}
+    <button type="submit" class="w-full text-left text-red-300 block hover:bg-orange-700 px-3 py-2 rounded-md text-base font-medium" style="border: none; background: none;">
+        <i class="bi bi-box-arrow-right mr-2"></i> Cerrar Sesión
+    </button>
+</form>
+                </div>
+                
+                {% else %}
+                <div class="pt-2 border-t border-orange-700 space-y-1">
+                    <a href="{% url 'login' %}" class="text-white block hover:bg-orange-700 px-3 py-2 rounded-md text-base font-medium">Iniciar Sesión</a>
+                    <a href="{% url 'signup' %}" class="bg-yellow-400 text-orange-800 block hover:bg-yellow-500 px-3 py-2 rounded-md text-base font-bold transition">Registrarse</a>
+                </div>
+                {% endif %}
+
+                <div class="border-t border-orange-700 pt-2 space-y-1">
+                    <a href="{% url 'mascotas:listado_perros' %}" class="text-white block hover:bg-orange-700 px-3 py-2 rounded-md text-base font-medium">Perros</a>
+                    <a href="{% url 'mascotas:listado_gatos' %}" class="text-white block hover:bg-orange-700 px-3 py-2 rounded-md text-base font-medium">Gatos</a>
+                    <a href="{% url 'mascotas:publicar_mascota' %}" class="text-white block hover:bg-orange-700 px-3 py-2 rounded-md text-base font-medium">Publicar Mascota</a>
+                </div>
+            </div>
+        </div>
     </nav>
-    <main class="flex-grow py-8 px-4 sm:px-6 lg:px-8">
-        {% block content %}
-        {% endblock %}
-    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const openButton = document.getElementById('mobile-menu-button');
+            const menu = document.getElementById('mobile-menu');
+            const overlay = document.getElementById('mobile-menu-overlay');
+            const menuIcon = document.getElementById('mobile-menu-icon');
+            
+            // Lógica de transición para ABRIR
+            function openMobileMenu() {
+                menu.classList.remove('translate-x-full');
+                overlay.classList.remove('hidden');
+                document.body.classList.add('overflow-hidden');
+                menuIcon.classList.remove('bi-list');
+                menuIcon.classList.add('bi-x-lg');
+            }
+
+            // Lógica de transición para CERRAR
+            function closeMobileMenu() {
+                menu.classList.add('translate-x-full');
+                overlay.classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+                menuIcon.classList.remove('bi-x-lg');
+                menuIcon.classList.add('bi-list');
+            }
+
+            // Manejar click en el botón de hamburguesa/cerrar
+            openButton.addEventListener('click', function () {
+                if (menu.classList.contains('translate-x-full')) {
+                    openMobileMenu();
+                } else {
+                    closeMobileMenu();
+                }
+            });
+
+            // Cerrar menú al hacer click en el overlay
+            overlay.addEventListener('click', closeMobileMenu);
+            
+            // Lógica del menú desplegable de escritorio
+            const userMenuButton = document.getElementById('user-menu-button-desktop');
+            const userMenuDropdown = document.getElementById('user-menu-dropdown-desktop');
+
+            if (userMenuButton && userMenuDropdown) {
+                userMenuButton.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    userMenuDropdown.classList.toggle('hidden');
+                });
+
+                document.addEventListener('click', function (event) {
+                    if (!userMenuButton.contains(event.target) && !userMenuDropdown.contains(event.target)) {
+                        userMenuDropdown.classList.add('hidden');
+                    }
+                });
+            }
+        });
+    </script>
+    <main class="flex-grow py-8 px-4 sm:px-6 lg:px-8"><div class="container mx-auto">{% block content %}{% endblock %}</div></main>
 
     <footer class="bg-gray-800 text-white mt-auto">
         <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 text-center">

@@ -21,4 +21,5 @@ urlpatterns = [
     path('solicitudes/', views.SolicitudListView.as_view(), name='solicitudes_recibidas'),
     path('cambiar-estado/<int:pk>/<str:estado>/', views.cambiar_estado_mascota, name='cambiar_estado'), 
     path('perfil/', views.ProfileUpdateView.as_view(), name='editar_perfil'),
+    path('mis-solicitudes-enviadas/', views.MisSolicitudesEnviadasView.as_view(), name='mis_solicitudes_enviadas'),
 ]

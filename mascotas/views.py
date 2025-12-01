@@ -14,15 +14,24 @@ from .forms import MascotaForm, SolicitudAdopcionForm, UserProfileForm
 
 
 # 1. Vista de Inicio (HomeView)
-class HomeView(TemplateView):
+class HomeView(TemplateView): # <--- Usaremos TemplateView
     template_name = 'mascotas/home.html'
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Opcional: pasar las últimas 4 mascotas disponibles al contexto
-        context['ultimas_mascotas'] = Mascota.objects.filter(
+        
+        # Conteo de mascotas disponibles para mostrar en la estadística (hero)
+        mascotas_disponibles_count = Mascota.objects.filter(estado_adopcion='D').count()
+        
+        # Mascotas destacadas (ej: 4 mascotas más recientes para la sección de listado)
+        mascotas_destacadas = Mascota.objects.filter(
             estado_adopcion='D'
-        ).order_by('-fecha_publicacion')[:4]
+        ).order_by('-fecha_publicacion')[:4] # Limitar a 4
+
+        # Pasar los datos al contexto
+        context['mascotas_disponibles_count'] = mascotas_disponibles_count
+        context['mascotas_destacadas'] = mascotas_destacadas
+        
         return context
 
 # 2. Vistas de Listado (Perros y Gatos)
@@ -197,10 +206,10 @@ class MascotaUserListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         # Filtra por 'publicado_por' y ANOTA el conteo de solicitudes.
         return Mascota.objects.filter(publicado_por=self.request.user).annotate(
-            # ⬅️ 2. USAR ANNOTATE
+            #  2. USAR ANNOTATE
             # 'solicitudes_count' será el nuevo campo accesible en el template.
             # 'solicitudadopcion' es el nombre del modelo de solicitudes en minúsculas (o el related_name).
-            solicitudes_count=Count('solicitudadopcion') 
+            solicitudes_count=Count('solicitudes')
         ).order_by('-fecha_publicacion')
     
 # 6. Vista de Listado de Solicitudes Recibidas
@@ -254,3 +263,17 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         messages.success(self.request, "Tu perfil (incluido tu número de WhatsApp) ha sido actualizado con éxito.")
         return super().form_valid(form)
+    
+# MisSolicitudesEnviadasView
+class MisSolicitudesEnviadasView(LoginRequiredMixin, ListView):
+    model = SolicitudAdopcion
+    template_name = 'mascotas/mis_solicitudes_enviadas.html'
+    context_object_name = 'mis_solicitudes'
+    paginate_by = 10 
+
+    def get_queryset(self):
+        # Filtra las solicitudes: solo aquellas enviadas por el usuario logueado.
+        # Asume que el campo en SolicitudAdopcion que guarda al usuario logueado es 'solicitante'
+        return SolicitudAdopcion.objects.filter(
+            solicitante=self.request.user
+        ).order_by('-fecha_solicitud')

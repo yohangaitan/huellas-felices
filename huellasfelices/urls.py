@@ -25,7 +25,7 @@ urlpatterns = [
     path('', include('mascotas.urls')),
     # Incluir las URLs de Autenticación de Django
     # Mapea todas las rutas de auth (login, logout, etc.) bajo el prefijo 'login/'
-    path('login/', include('django.contrib.auth.urls')),
+    path('', include('django.contrib.auth.urls')),
     path('signup/', SignUpView.as_view(), name='signup'),
 ]
 

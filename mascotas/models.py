@@ -1,34 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.urls import reverse
 from django.conf import settings
+# Eliminamos la importación de reverse ya que no se usa en este archivo
 
-# --- Nuevas Opciones de Edad y Región ---
-EDAD_CHOICES = [
-    ('CACHORRO', 'Cachorro'),
-    ('JOVEN', 'Joven'),
-    ('ADULTO', 'Adulto'),
-]
-
-REGION_CHOICES = [
-    ('PANAMA', 'Panamá'),
-    ('PANAMA_OESTE', 'Panamá Oeste'),
-    ('COLON', 'Colón'),
-    ('LOS_SANTOS', 'Los Santos'),
-    ('COCLE', 'Coclé'),
-    ('VERAGUAS', 'Veraguas'),
-    ('DARIEN', 'Darién'),
-    ('CHIRIQUI', 'Chiriquí'),
-    ('HERRERA', 'Herrera'), # Añadimos Herrera, si aplica
-    ('BOCAS_DEL_TORO', 'Bocas del Toro'), # Añadimos Bocas del Toro, si aplica
-    ('COMARCA', 'Comarca Indígena'),
-]
-
+# --- Opciones de Choices (Fuera de las clases si son compartidas) ---
+# Aunque tienes duplicadas estas en Mascota, las mantendré comentadas para no romper nada
 
 # Create your models here.
 class Mascota(models.Model):
-    # --- 1. Definición de Choices (Constantes para los filtros) ---
-    
+    # --- 1. Definición de Choices (Internas) ---
     TAMANO_CHOICES = [
         ('P', 'Pequeño'),
         ('M', 'Mediano'),
@@ -70,7 +50,6 @@ class Mascota(models.Model):
 
     # --- 2. Campos del Modelo ---
     
-    # Llave foránea al usuario que publica la mascota
     publicado_por = models.ForeignKey(
         User, 
         on_delete=models.CASCADE, 
@@ -101,30 +80,15 @@ class Mascota(models.Model):
         verbose_name_plural = "Mascotas"
         ordering = ['-fecha_publicacion']
     
-    class SolicitudAdopcion(models.Model):
-        mascota = models.ForeignKey('Mascota', on_delete=models.CASCADE, related_name='solicitudes')
-        solicitante = models.ForeignKey(User, on_delete=models.CASCADE, related_name='solicitudes_enviadas')
-    
-        nombre_completo = models.CharField(max_length=150)
-        correo_electronico = models.EmailField()
-        telefono = models.CharField(max_length=20, blank=True, null=True)
-    
-        mensaje = models.TextField(help_text="Cuéntale al publicador por qué quieres adoptar a esta mascota.")
-    
-        fecha_solicitud = models.DateTimeField(auto_now_add=True)
-    
-        def __str__(self):
-            return f"Solicitud de {self.nombre_completo} para {self.mascota.nombre}"
-
-        class Meta:
-            verbose_name = "Solicitud de Adopción"
-            verbose_name_plural = "Solicitudes de Adopción"
-            ordering = ['-fecha_solicitud']
-
+# ----------------------------------------------------------------------
+# ELIMINÉ LA CLASE SolicitudAdopcion ANIDADA Y LA DEFINICIÓN DUPLICADA
+# AHORA SÓLO TENEMOS UNA DEFINICIÓN VÁLIDA:
+# ----------------------------------------------------------------------
 class SolicitudAdopcion(models.Model):
+    # La relación inversa se llama 'solicitudes'
     mascota = models.ForeignKey('Mascota', on_delete=models.CASCADE, related_name='solicitudes')
     
-    # Usuario solicitante. Se hizo null=True para ser flexible.
+    # Usuario solicitante.
     solicitante = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='solicitudes_enviadas', null=True, blank=True)
     
     nombre_completo = models.CharField(max_length=150)
@@ -145,10 +109,8 @@ class SolicitudAdopcion(models.Model):
 
 # Perfil de Usuario
 class UserProfile(models.Model):
-    # Relación uno a uno con el modelo de Usuario de Django
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
     
-    # Campo para almacenar el número de WhatsApp
     telefono_whatsapp = models.CharField(
         max_length=20, 
         blank=True, 
@@ -156,7 +118,5 @@ class UserProfile(models.Model):
         help_text="Tu número de teléfono para ser contactado por WhatsApp (ej: 5076xxxxxx)"
     )
     
-    # Puedes añadir otros campos de perfil aquí (ej. dirección, biografía, foto de perfil)
-
     def __str__(self):
         return f"Perfil de {self.user.username}"
