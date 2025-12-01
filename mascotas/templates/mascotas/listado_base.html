@@ -3,94 +3,132 @@
 {% block title %}Listado de Adopción{% endblock %}
 
 {% block content %}
-<h1 class="mb-4 text-4xl font-extrabold text-gray-800">
-    {% if view.kwargs.filter == 'Perro' %}
-        🐶 Perros en Adopción
-    {% elif view.kwargs.filter == 'Gato' %}
-        🐱 Gatos en Adopción
-    {% else %}
-        Mascotas en Adopción
-    {% endif %}
-</h1>
-
-<div class="mb-6 p-4 bg-white border border-gray-200 rounded-lg shadow-md">
-    <h4 class="text-xl font-semibold mb-3 text-gray-700">Filtrar y Buscar</h4>
+<div class="container mx-auto p-4 md:p-8">
     
-    <form method="GET" class="space-y-4 lg:space-y-0 lg:flex lg:space-x-4">
-        
-        <div class="flex-grow">
-            <input type="text" name="q" placeholder="Buscar por nombre o raza..." 
-                   value="{{ query }}" 
-                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
-        </div>
-
-        <div>
-            <select name="tamano" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
-                <option value="">Tamaño</option>
-                {% for key, value in TAMANO_CHOICES %}
-                    <option value="{{ key }}" {% if key == tamano_seleccionado %}selected{% endif %}>
-                        {{ value }}
-                    </option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <div>
-            <select name="edad" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
-                <option value="">Edad</option>
-                {% for key, value in EDAD_CHOICES %}
-                    <option value="{{ key }}" {% if key == edad_seleccionada %}selected{% endif %}>
-                        {{ value }}
-                    </option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <div>
-            <select name="region" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
-                <option value="">Provincia</option>
-                {% for key, value in REGION_CHOICES %}
-                    <option value="{{ key }}" {% if key == region_seleccionada %}selected{% endif %}>
-                        {{ value }}
-                    </option>
-                {% endfor %}
-            </select>
-        </div>
-        
-        <button type="submit" class="w-full lg:w-auto px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition">
-            <i class="bi bi-funnel"></i> Aplicar
-        </button>
-        
-        {% if query or tamano_seleccionado or edad_seleccionada or region_seleccionada %}
-            <a href="." class="w-full lg:w-auto px-6 py-2 bg-gray-400 text-white font-semibold rounded-lg hover:bg-gray-500 transition text-center">
-                Limpiar
-            </a>
+    {# Título de la Sección #}
+    <h1 class="mb-6 text-4xl font-extrabold text-gray-800 text-center">
+        {% if view.kwargs.filter == 'Perro' %}
+            🐶 Perros en Adopción
+        {% elif view.kwargs.filter == 'Gato' %}
+            🐱 Gatos en Adopción
+        {% else %}
+            Mascotas en Adopción
         {% endif %}
-    </form>
-</div>
+    </h1>
+
+    {# Sección de Filtros y Búsqueda (Mejorada) #}
+    <div class="mb-10 p-4 lg:p-6 bg-white border border-gray-200 rounded-xl shadow-lg">
+        <h4 class="text-xl font-bold mb-4 text-gray-700">Filtrar y Buscar</h4>
+        
+        <form method="GET" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
+            
+            {# Campo de Búsqueda #}
+            <div class="lg:col-span-2">
+                <input type="text" name="q" placeholder="Buscar por nombre o raza..." 
+                        value="{{ query }}" 
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 shadow-sm">
+            </div>
+
+            {# Selects (Tamaño, Edad, Provincia) #}
+            <div>
+                <select name="tamano" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="">Tamaño</option>
+                    {% for key, value in TAMANO_CHOICES %}
+                        <option value="{{ key }}" {% if key == tamano_seleccionado %}selected{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <select name="edad" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="">Edad</option>
+                    {% for key, value in EDAD_CHOICES %}
+                        <option value="{{ key }}" {% if key == edad_seleccionada %}selected{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <select name="region" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="">Provincia</option>
+                    {% for key, value in REGION_CHOICES %}
+                        <option value="{{ key }}" {% if key == region_seleccionada %}selected{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            {# Botón Aplicar #}
+            <button type="submit" class="w-full px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition shadow-md">
+                <i class="bi bi-funnel mr-1"></i> Aplicar
+            </button>
+            
+            {# Botón Limpiar (Solo aparece si hay filtros aplicados) #}
+            {% if query or tamano_seleccionado or edad_seleccionada or region_seleccionada %}
+                <a href="." class="w-full px-6 py-2 bg-gray-400 text-white font-semibold rounded-lg hover:bg-gray-500 transition shadow-md text-center">
+                    Limpiar
+                </a>
+            {% endif %}
+        </form>
+    </div>
 
 
-<div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
-    {% for mascota in mascotas_disponibles %}
-    <div class="col">
-        <div class="card h-100 shadow-sm">
-            <img src="{{ mascota.imagen.url }}" class="card-img-top" alt="{{ mascota.nombre }}" style="height: 250px; object-fit: cover;">
-            <div class="card-body d-flex flex-column">
-                <h5 class="card-title">{{ mascota.nombre }}</h5>
-                <p class="card-text mb-1">
-                    <span class="badge bg-secondary">{{ mascota.get_especie_display }}</span>
-                    <span class="badge bg-info text-dark">{{ mascota.get_tamano_display }}</span>
-                </p>
-                <p class="text-muted">{{ mascota.raza }} | {{ mascota.get_edad_display }} | {{ mascota.get_region_display }}</p>
-                
-                <a href="{% url 'mascotas:detalle_mascota' pk=mascota.pk %}" class="mt-auto btn btn-primary">¡Me Interesa!</a>
-            </div>
-        </div>
-    </div>
-    {% empty %}
-        <div class="col-12 mt-5 text-center text-muted">
-            <p class="lead">No se encontraron mascotas que coincidan con tu búsqueda.</p>
-        </div>
-    {% endfor %}
+    {# LISTADO DE MASCOTAS - ¡Transformado a Tailwind GRID! #}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        
+        {% for mascota in mascotas_disponibles %}
+        
+        {# Estructura de la Tarjeta (Reemplaza Card, Col, etc. de Bootstrap) #}
+        <div class="bg-white rounded-xl shadow-2xl overflow-hidden transform hover:scale-[1.03] transition duration-300 ease-in-out border border-gray-100 flex flex-col">
+            
+            {# Imagen #}
+            <a href="{% url 'mascotas:detalle_mascota' pk=mascota.pk %}">
+                <img src="{{ mascota.imagen.url }}" 
+                    class="w-full h-56 object-cover object-center transition duration-500 hover:opacity-90" 
+                    alt="Foto de {{ mascota.nombre }}">
+            </a>
+            
+            {# Cuerpo de la Tarjeta #}
+            <div class="p-4 flex flex-col flex-grow">
+                
+                {# Título/Nombre #}
+                <h2 class="text-xl font-bold text-gray-900 mb-2 truncate">
+                    <a href="{% url 'mascotas:detalle_mascota' pk=mascota.pk %}" class="hover:text-indigo-600 transition">
+                        {{ mascota.nombre }}
+                    </a>
+                </h2>
+                
+                {# Etiquetas (Especie y Tamaño) #}
+                <div class="flex flex-wrap gap-2 text-xs mb-3">
+                    {# Especie (Índigo) #}
+                    <span class="px-2 py-1 rounded-full bg-indigo-100 text-indigo-800 font-medium">
+                        {{ mascota.get_especie_display }}
+                    </span>
+                    {# Tamaño (Gris) #}
+                    <span class="px-2 py-1 rounded-full bg-gray-200 text-gray-700 font-medium">
+                        {{ mascota.get_tamano_display }}
+                    </span>
+                </div>
+                
+                {# Detalles Adicionales #}
+                <p class="text-sm text-gray-500 mb-4 flex-grow">
+                    <span class="font-semibold">{{ mascota.raza }}</span> | {{ mascota.get_edad_display }}
+                    <br>
+                    <i class="bi bi-geo-alt-fill mr-1 text-indigo-500"></i> {{ mascota.get_region_display }}
+                </p>
+                
+                {# Botón de CTA (Se queda en la parte inferior) #}
+                <a href="{% url 'mascotas:detalle_mascota' pk=mascota.pk %}" 
+                   class="mt-auto w-full block text-center py-2 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition shadow-md">
+                    ¡Me Interesa!
+                </a>
+            </div>
+        </div>
+        
+        {% empty %}
+        <div class="col-span-full mt-5 text-center text-gray-500">
+            <p class="text-xl font-semibold">No se encontraron mascotas que coincidan con tu búsqueda.</p>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}

@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container mx-auto p-4 md:p-8">
     <h1 class="text-3xl font-bold text-gray-800 mb-6 border-b pb-2">
-        <i class="bi bi-envelope-fill mr-2 text-orange-600"></i> Solicitudes Recibidas
+        <i class="bi bi-envelope-fill mr-2 text-teal-600"></i> Solicitudes Recibidas
     </h1>
 
     {% if solicitudes %}
@@ -13,7 +13,7 @@
 
     <div class="bg-white shadow-lg rounded-lg overflow-hidden">
         <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-orange-500 text-white">
+            <thead class="bg-teal-500 text-white">
                 <tr>
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                         Mascota
@@ -35,7 +35,7 @@
             <tbody class="bg-white divide-y divide-gray-200">
                 {% for solicitud in solicitudes %}
                 <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-orange-600">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-teal-600">
                         <a href="{% url 'mascotas:detalle_mascota' pk=solicitud.mascota.pk %}">
                             {{ solicitud.mascota.nombre }}
                         </a>

@@ -27,6 +27,7 @@ urlpatterns = [
     # Mapea todas las rutas de auth (login, logout, etc.) bajo el prefijo 'login/'
     path('', include('django.contrib.auth.urls')),
     path('signup/', SignUpView.as_view(), name='signup'),
+    path('blog/', include('blog.urls')),
 ]
 
 # Configuración necesaria para servir archivos de usuario (imágenes) en desarrollo

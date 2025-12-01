@@ -1,96 +1,336 @@
-{% extends "mascotas/base.html" %}
+    {% extends "mascotas/base.html" %}
+    {% load static %}
 
-{% block title %}Adopta Hoy | Huellas Felices{% endblock %}
+    {% block title %}Adopta Hoy | Huellas Felices{% endblock %}
 
-{% block content %}
+    {% block content %}
 
-<section class="bg-cover bg-center h-[60vh] flex items-center" 
-         style="background-image: url('URL_DE_IMAGEN_HERO_GRANDE');">
-    <div class="container mx-auto p-4 text-center text-white bg-black bg-opacity-30 p-8 rounded-lg">
-        <h1 class="text-5xl md:text-6xl font-extrabold mb-4">
-            Encuentra perros y gatos para adopción en Panamá
-        </h1>
-        <p class="text-xl mb-8">
-            Conecta con refugios, rescatistas y particulares. Tu proceso de adopción es **fácil, rápido y seguro**.
-        </p>
-        <div class="flex justify-center space-x-4">
-            <a href="{% url 'mascotas:listado_perros' %}" class="px-8 py-3 bg-white text-orange-600 font-bold rounded-lg shadow-xl hover:bg-gray-200 transition">
-                Perros en adopción 🐕
-            </a>
-            <a href="{% url 'mascotas:listado_gatos' %}" class="px-8 py-3 bg-white text-orange-600 font-bold rounded-lg shadow-xl hover:bg-gray-200 transition">
-                Gatos en adopción 🐈
+    <!-- ===================== HERO PRINCIPAL ===================== -->
+    <section class="relative bg-cover bg-center h-[70vh] w-screen 
+                    left-1/2 right-1/2 -translate-x-1/2 max-w-none flex items-center overflow-hidden"
+            style="background-image: url('{% static 'img/fondo.jpg' %}');">
+
+        <div class="absolute inset-0 bg-black/40"></div>
+
+        <div class="relative z-10 text-center text-white w-full px-4">
+            <h1 class="text-5xl md:text-6xl font-extrabold mb-4">
+                Encuentra perros y gatos para adopción en 
+                <span class="text-teal-300">Panamá</span>
+            </h1>
+
+            <p class="text-xl mb-8 max-w-2xl mx-auto">
+                Conecta con refugios, rescatistas y particulares. Tu proceso de adopción es **fácil, rápido y seguro**.
+            </p>
+
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <a href="{% url 'mascotas:listado_perros' %}" class="px-8 py-3 bg-white text-teal-600 font-bold rounded-full shadow-xl hover:bg-gray-200 transition">
+                    Perros en adopción
+                </a>
+                <a href="{% url 'mascotas:listado_gatos' %}" class="px-8 py-3 bg-white text-teal-600 font-bold rounded-full shadow-xl hover:bg-gray-200 transition">
+                    Gatos en adopción
+                </a>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- ===================== SECCIÓN DESTACADOS ===================== -->
+    <section class="py-12 bg-gray-50">
+        <div class="container mx-auto p-4 text-center">
+            <p class="text-5xl font-extrabold text-teal-600 mb-2">
+                {{ mascotas_disponibles_count }}
+            </p>
+            <h2 class="text-3xl font-extrabold text-gray-900 mb-8">
+                Perritos y gatitos para adoptar en Panamá
+            </h2>
+
+            <p class="text-lg text-gray-600 mb-10">
+                ¡Nuestras mascotas esperan por ti! Explora los compañeros más recientes.
+            </p>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                {% for mascota in mascotas_destacadas %}
+                    {% include "mascotas/components/mascota_card.html" with mascota=mascota %}
+                {% empty %}
+                    <p class="col-span-4 text-center text-gray-500">No hay mascotas disponibles para destacar por el momento.</p>
+                {% endfor %}
+            </div>
+
+            <a href="{% url 'mascotas:listado_perros' %}" class="mt-10 inline-block px-8 py-3 bg-teal-600 text-white font-bold rounded-full hover:bg-teal-700 transition shadow-lg">
+                Ver todas las mascotas
             </a>
         </div>
-    </div>
-</section>
+    </section>
 
-<section class="py-12 bg-gray-50">
-    <div class="container mx-auto p-4 text-center">
-        <p class="text-5xl font-extrabold text-orange-600 mb-2">
-            {{ mascotas_disponibles_count }}
-        </p>
-        <h2 class="text-3xl font-extrabold text-gray-900 mb-8">
-            Perritos y gatitos para adoptar en Panamá
-        </h2>
-        
-        <p class="text-lg text-gray-600 mb-10">
-            ¡Nuestras mascotas esperan por ti! Explora los compañeros más recientes.
-        </p>
+    <!-- SECCIÓN: ¿Piensas adoptar una mascota? -->
+<section class="py-20 bg-gray-800 text-white w-screen 
+                left-1/2 right-1/2 -translate-x-1/2 max-w-none relative">
 
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {% for mascota in mascotas_destacadas %}
-                {% include "mascotas/components/mascota_card.html" with mascota=mascota %}
-            {% empty %}
-                <p class="col-span-4 text-center text-gray-500">No hay mascotas disponibles para destacar por el momento.</p>
-            {% endfor %}
-        </div>
-        
-        <a href="{% url 'mascotas:listado_perros' %}" class="mt-10 inline-block px-8 py-3 bg-orange-600 text-white font-bold rounded-lg hover:bg-orange-700 transition shadow-lg">
-            Ver todas las mascotas 🐾
-        </a>
-    </div>
-</section>
-
-<section class="py-16 bg-orange-600 text-white">
-    <div class="container mx-auto p-4 text-center">
+    <div class="text-center px-4 max-w-3xl mx-auto">
         <h2 class="text-4xl font-extrabold mb-4">
-            ¿Necesitas dar en adopción una mascota?
+            ¿Piensas adoptar una mascota?
         </h2>
-        <p class="text-lg mb-6">
-            Si tienes un refugio, has rescatado una mascota o por algún motivo no puedes seguir cuidando de tu mascota, publícala totalmente gratis en nuestro sitio web.
+
+        <p class="text-lg mb-6 text-gray-200">
+            Lee nuestro blog y conoce todo lo que debes saber antes, durante y después de 
+            adoptar una nueva mascota para tu hogar.
         </p>
-        <a href="{% url 'mascotas:publicar_mascota' %}" class="inline-block px-8 py-3 bg-white text-orange-600 font-bold rounded-lg hover:bg-gray-200 transition shadow-xl">
-            Publica una mascota
+
+        <a href="/blog"
+           class="inline-block px-8 py-3 bg-teal-500 text-white font-bold rounded-full hover:bg-teal-600 transition shadow-xl">
+            Ir al blog
         </a>
     </div>
+
 </section>
 
-<section class="py-12">
-    <div class="container mx-auto p-4">
-        <h2 class="text-3xl font-extrabold text-center text-gray-900 mb-8">
+
+    <!-- SECCIÓN: Artículos del Blog -->
+    <section style="width: 100%; padding: 80px 20px;">
+
+        <h2 style="
+            font-size: 40px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 50px;
+            color: #1a1a1a;
+        ">
+            Artículos del Blog
+        </h2>
+
+        <div style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        ">
+
+            <!-- CARD 1 -->
+            <a href="/blog/cuales-son-los-requisitos-para-adoptar-un-perro-o-un-gato/" style="
+                text-decoration: none;
+                color: inherit;
+            ">
+                <div style="
+                    background: #fff;
+                    border-radius: 14px;
+                    overflow: hidden;
+                    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+                    transition: transform 0.2s;
+                " onmouseover="this.style.transform='translateY(-5px)';" onmouseout="this.style.transform='none';">
+                    <img src="/media/blog_images/mascotas-en-adopcion-beneficios-y-requisitos-para-adoptar-un-perro-o-gato.avif" style="width: 100%; height: 200px; object-fit: cover;">
+                    <div style="padding: 25px;">
+                        <p style="color: #008080; font-size: 14px; font-weight: 700;">
+                            ADOPCIÓN DE MASCOTAS
+                        </p>
+                        <h3 style="font-size: 22px; font-weight: 700; margin: 10px 0;">
+                            ¿Cuáles son los requisitos para adoptar un perro o un gato?
+                        </h3>
+                        <p style="font-size: 16px; color: #555;">
+                            En este artículo te contamos los requisitos principales al momento de adoptar una mascota.
+                        </p>
+                        <p style="margin-top: 15px; color: #008080; font-weight: 700;">
+                            Leer más →
+                        </p>
+                    </div>
+                </div>
+            </a>
+
+            <!-- CARD 2 -->
+            <a href="/blog/deberia-esterilizar-a-mi-perro-o-gato-adoptado/" style="text-decoration: none; color: inherit;">
+                <div style="
+                    background: #fff;
+                    border-radius: 14px;
+                    overflow: hidden;
+                    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+                    transition: transform 0.2s;
+                " onmouseover="this.style.transform='translateY(-5px)';" onmouseout="this.style.transform='none';">
+                    <img src="/media/blog_images/estelizacion-perro-dia-mundial-directrices.webp" style="width: 100%; height: 200px; object-fit: cover;">
+                    <div style="padding: 25px;">
+                        <p style="color: #008080; font-size: 14px; font-weight: 700;">
+                            ADOPCIÓN DE MASCOTAS
+                        </p>
+                        <h3 style="font-size: 22px; font-weight: 700; margin: 10px 0;">
+                            ¿Debería esterilizar a mi perro o gato adoptado?
+                        </h3>
+                        <p style="font-size: 16px; color: #555;">
+                            Adoptar una mascota es una gran responsabilidad, y esterilizarla es una de las decisiones esenciales.
+                        </p>
+                        <p style="margin-top: 15px; color: #008080; font-weight: 700;">
+                            Leer más →
+                        </p>
+                    </div>
+                </div>
+            </a>
+
+            <!-- CARD 3 -->
+            <a href="/blog/lo-que-debes-hacer-si-encuentras-una-mascota-abandonada/" style="text-decoration: none; color: inherit;">
+                <div style="
+                    background: #fff;
+                    border-radius: 14px;
+                    overflow: hidden;
+                    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+                    transition: transform 0.2s;
+                " onmouseover="this.style.transform='translateY(-5px)';" onmouseout="this.style.transform='none';">
+                    <img src="/media/blog_images/mascota_abandonada.jpg" style="width: 100%; height: 200px; object-fit: cover;">
+                    <div style="padding: 25px;">
+                        <p style="color: #008080; font-size: 14px; font-weight: 700;">
+                            ADOPCIÓN DE MASCOTAS
+                        </p>
+                        <h3 style="font-size: 22px; font-weight: 700; margin: 10px 0;">
+                            Lo que debes hacer si encuentras una mascota abandonada
+                        </h3>
+                        <p style="font-size: 16px; color: #555;">
+                            Encontrar un animal abandonado puede ser difícil. Aquí te explicamos cómo actuar correctamente.
+                        </p>
+                        <p style="margin-top: 15px; color: #008080; font-weight: 700;">
+                            Leer más →
+                        </p>
+                    </div>
+                </div>
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- ===================== SECCIÓN: DAR EN ADOPCIÓN ===================== -->
+    <section class="py-16 bg-gray-800 text-white w-screen 
+                    left-1/2 right-1/2 -translate-x-1/2 max-w-none relative">
+
+        <div class="text-center px-4 max-w-3xl mx-auto">
+            <h2 class="text-4xl font-extrabold mb-4">
+                ¿Necesitas dar en adopción una mascota?
+            </h2>
+
+            <p class="text-lg mb-6">
+                Si tienes un refugio, has rescatado una mascota o por algún motivo no puedes seguir cuidando de tu mascota, publícala totalmente gratis en nuestro sitio web.
+            </p>
+
+            <a href="{% url 'mascotas:publicar_mascota' %}"
+            class="inline-block px-8 py-3 bg-teal-500 text-white font-bold rounded-full hover:bg-teal-600 transition shadow-xl">
+                Publica una mascota
+            </a>
+        </div>
+
+    </section>
+
+    <!-- SECCIÓN: Preguntas Frecuentes -->
+    <section style="width: 100%; padding: 80px 20px; max-width: 1000px; margin: 0 auto;">
+
+        <h2 style="
+            font-size: 42px;
+            font-weight: 700;
+            text-align: center;
+            color: #1a1a1a;
+            margin-bottom: 50px;
+        ">
             Preguntas Frecuentes
         </h2>
-        
-        <div class="max-w-3xl mx-auto">
-            <div class="border-b py-4">
-                <strong class="block text-lg text-gray-800 cursor-pointer hover:text-orange-600">
-                    ¿Dónde puedo adoptar perros y gatos en Panamá?
-                </strong>
-                <p class="mt-2 text-gray-600 text-sm">
-                    ¡Estás en el lugar correcto! Huellas Felices es una plataforma que conecta con refugios, rescatistas y particulares en todo el país.
-                </p>
-            </div>
-            <div class="border-b py-4">
-                <strong class="block text-lg text-gray-800 cursor-pointer hover:text-orange-600">
-                    ¿Cuánto cuesta adoptar perros y gatos en Panamá?
-                </strong>
-                <p class="mt-2 text-gray-600 text-sm">
-                    La mayoría de las adopciones tienen un costo de recuperación mínimo que cubre la esterilización y las primeras vacunas. El publicador te dará los detalles exactos.
-                </p>
-            </div>
-            </div>
 
-    </div>
-</section>
+        <!-- Pregunta 1 -->
+        <details style="margin-bottom: 40px; font-size: 18px;">
+            <summary style="
+                cursor: pointer;
+                font-size: 22px;
+                font-weight: 600;
+                padding: 15px 0;
+                border-bottom: 1px solid #ddd;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                list-style: none;
+            ">
+                Quiero más información sobre una mascota que he visto en Huellas Felices
+            </summary>
 
-{% endblock content %}
+            <p style="margin-top: 20px; line-height: 1.6;">
+                Si deseas más información sobre una mascota publicada, puedes contactar directamente
+                al adoptante o refugio encargado utilizando el botón de contacto dentro de la ficha
+                de la mascota. Cada publicación incluye la información proporcionada por el anunciante.
+            </p>
+        </details>
+
+        <!-- Pregunta 2 -->
+        <details style="margin-bottom: 40px; font-size: 18px;">
+            <summary style="
+                cursor: pointer;
+                font-size: 22px;
+                font-weight: 600;
+                padding: 15px 0;
+                border-bottom: 1px solid #ddd;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                list-style: none;
+            ">
+                Acabo de rescatar un perro o gato de la calle, pero no lo puedo mantener ¿Qué hago?
+            </summary>
+
+            <p style="margin-top: 20px; line-height: 1.6;">
+                Primero que nada, agradecemos tu ayuda hacia la mascota que rescataste.
+                Si puedes cuidarla temporalmente por unos días o semanas, te recomendamos llevarla
+                al veterinario si está dentro de tus posibilidades.
+            </p>
+
+            <p style="margin-top: 15px; line-height: 1.6;">
+                Si la mascota está saludable y apta para adopción, puedes 
+                <a href="/publicar" style="color: #008080; font-weight: 600; text-decoration: underline;">publicarla aquí</a>
+                para que posibles adoptantes puedan contactarte.
+            </p>
+
+            <p style="margin-top: 15px; line-height: 1.6;">
+                Si no puedes cuidarla, recomendamos contactar refugios o rescatistas explicando la situación.
+                En algunos casos podrán ayudarte con su cuidado o buscarle un hogar.
+            </p>
+        </details>
+
+        <!-- Pregunta 3 -->
+        <details style="margin-bottom: 40px; font-size: 18px;">
+            <summary style="
+                cursor: pointer;
+                font-size: 22px;
+                font-weight: 600;
+                padding: 15px 0;
+                border-bottom: 1px solid #ddd;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                list-style: none;
+            ">
+                ¿La publicación de mascotas es gratuita?
+            </summary>
+
+            <p style="margin-top: 20px; line-height: 1.6;">
+                Sí, publicar una mascota para adopción es totalmente gratis. Nuestro objetivo es ayudar 
+                a que más animales encuentren un hogar seguro y responsable.
+            </p>
+        </details>
+
+        <!-- Pregunta 4 -->
+        <details style="margin-bottom: 40px; font-size: 18px;">
+            <summary style="
+                cursor: pointer;
+                font-size: 22px;
+                font-weight: 600;
+                padding: 15px 0;
+                border-bottom: 1px solid #ddd;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                list-style: none;
+            ">
+                ¿Cómo puedo contactar al adoptante o refugio?
+            </summary>
+
+            <p style="margin-top: 20px; line-height: 1.6;">
+                Dentro de cada ficha de mascota encontrarás un botón de contacto donde podrás enviar 
+                un mensaje directamente al responsable de la publicación.
+            </p>
+        </details>
+
+    </section>
+
+
+    {% endblock content %}

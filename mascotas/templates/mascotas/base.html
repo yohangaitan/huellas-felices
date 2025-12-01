@@ -1,68 +1,82 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Huellas Felices{% endblock %}</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col overflow-x-hidden">
     
+    {# Overlay oscuro para cuando el menú móvil está abierto #}
     <div id="mobile-menu-overlay" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"></div>
     
-    <nav class="bg-orange-500 shadow-md sticky top-0 z-50 relative"> 
+    {# NAVBAR - GRAY-800 #}
+    <nav class="bg-gray-800 shadow-md sticky top-0 z-50"> 
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 
                 <div class="flex-shrink-0">
-                    <a href="{% url 'mascotas:home' %}" class="text-white text-xl font-bold">
-                        <i class="bi bi-house-door-fill mr-1"></i> Huellas Felices
+                    <a href="{% url 'mascotas:home' %}" class="text-white text-xl font-bold hover:text-gray-300 transition">
+                        <i class="bi bi-house-door-fill mr-1 text-teal-400"></i> Huellas Felices
                     </a>
                 </div>
 
                 <div class="hidden md:flex space-x-4 items-center">
-                    <a href="{% url 'mascotas:listado_perros' %}" class="text-white hover:bg-orange-600 px-3 py-2 rounded-md text-sm font-medium">Perros</a>
-                    <a href="{% url 'mascotas:listado_gatos' %}" class="text-white hover:bg-orange-600 px-3 py-2 rounded-md text-sm font-medium">Gatos</a>
+                    <a href="{% url 'mascotas:listado_perros' %}" class="text-white hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">Perros</a>
+                    <a href="{% url 'mascotas:listado_gatos' %}" class="text-white hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">Gatos</a>
                     
-                    <a href="{% url 'mascotas:publicar_mascota' %}" class="bg-yellow-400 text-orange-800 hover:bg-yellow-500 px-3 py-1.5 rounded-full text-sm font-bold transition">
+                    {# BOTÓN PRINCIPAL: TEAL VIBRANTE #}
+                    <a href="{% url 'mascotas:publicar_mascota' %}" class="bg-teal-500 text-white hover:bg-teal-600 px-3 py-1.5 rounded-full text-sm font-bold transition shadow-md">
                         <i class="bi bi-upload mr-1"></i> Publicar Mascota
                     </a>
+                    <a href="{% url 'blog:listado' %}" class="text-white hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">Blog</a>
                 </div>
 
                 <div class="flex items-center space-x-4">
                     
                     {% if user.is_authenticated %}
+                    {# MENÚ DESPLEGABLE DE ESCRITORIO #}
                     <div class="relative hidden md:block" id="user-menu-desktop">
-                        <button class="flex items-center text-white hover:bg-orange-600 px-3 py-2 rounded-md text-sm font-medium" 
-                                id="user-menu-button-desktop">
+                        <button class="flex items-center text-white hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium" 
+                                id="user-menu-button-desktop" aria-expanded="false" aria-haspopup="true">
                             Hola, {{ user.username }} <i class="bi bi-chevron-down ml-1 text-xs"></i>
                         </button>
                         
-                        <div id="user-menu-dropdown-desktop" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-60 hidden">
-                            <a href="{% url 'mascotas:editar_perfil' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        {# El menú desplegable en sí #}
+                        <div id="user-menu-dropdown-desktop" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-60 hidden" role="menu">
+                            <a href="{% url 'mascotas:editar_perfil' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-teal-700 transition" role="menuitem">
                                 <i class="bi bi-person mr-2"></i> Mi Perfil
                             </a>
-                            <a href="{% url 'mascotas:mis_publicaciones' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <a href="{% url 'mascotas:mis_publicaciones' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-teal-700 transition" role="menuitem">
                                 <i class="bi bi-box-seam mr-2"></i> Mis Publicaciones
                             </a>
-                            <a href="{% url 'mascotas:solicitudes_recibidas' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                <i class="bi bi-bell mr-2 text-green-600"></i> Solicitudes (1)
+                            <a href="{% url 'mascotas:solicitudes_recibidas' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-teal-700 transition" role="menuitem">
+                                <i class="bi bi-bell mr-2 text-teal-600"></i> Solicitudes (1)
                             </a>
                             <div class="border-t border-gray-100 my-1"></div>
                             <form method="post" action="{% url 'logout' %}" class="block">
-    {% csrf_token %}
-    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100" style="border: none; background: none;">
-        <i class="bi bi-box-arrow-right mr-2"></i> Cerrar Sesión
-    </button>
-</form>
+                                {% csrf_token %}
+                                <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition" role="menuitem" style="border: none; background: none;">
+                                    <i class="bi bi-box-arrow-right mr-2"></i> Cerrar Sesión
+                                </button>
+                            </form>
                         </div>
                     </div>
                     {% else %}
                     <div class="hidden md:flex space-x-2">
-                        <a href="{% url 'login' %}" class="text-white hover:bg-orange-600 px-3 py-2 rounded-md text-sm font-medium">Iniciar Sesión</a>
-                        <a href="{% url 'signup' %}" class="text-white bg-orange-600 hover:bg-orange-700 px-3 py-2 rounded-md text-sm font-medium">Registrarse</a>
+                        <a href="{% url 'login' %}" class="text-white hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">Iniciar Sesión</a>
+                        <a href="{% url 'signup' %}" class="text-white bg-teal-500 hover:bg-teal-600 px-3 py-2 rounded-md text-sm font-medium transition shadow-sm">Registrarse</a>
                     </div>
                     {% endif %}
                     
@@ -74,48 +88,50 @@
             </div>
         </div>
         
-        <div id="mobile-menu" class="fixed top-0 right-0 h-full w-3/4 max-w-xs bg-orange-600 shadow-xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out md:hidden">
+        {# MENÚ MÓVIL - Fondo Blanco #}
+        <div id="mobile-menu" class="fixed top-0 right-0 h-full w-3/4 max-w-xs bg-white shadow-xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out md:hidden">
             
-            <div class="p-4 flex justify-between items-center border-b border-orange-700">
+            {# Encabezado del Menú Móvil - Fondo Gris Oscuro #}
+            <div class="p-4 flex justify-between items-center bg-gray-800 h-16">
                 <h3 class="text-white text-xl font-bold">Menú</h3>
             </div>
 
             <div class="pb-3 space-y-1 sm:px-3 overflow-y-auto h-[calc(100vh-64px)]">
                 
                 {% if user.is_authenticated %}
-                <div class="pt-2 pb-1 text-white text-base font-bold px-3">
+                <div class="pt-2 pb-1 text-gray-800 text-base font-bold px-3">
                     Hola, {{ user.username }}
                 </div>
                 
-                <div class="border-t border-orange-700 pt-2 space-y-1">
-                    <a href="{% url 'mascotas:editar_perfil' %}" class="text-white block hover:bg-orange-700 px-3 py-2 rounded-md text-base font-medium">
+                <div class="border-t border-gray-200 pt-2 space-y-1">
+                    <a href="{% url 'mascotas:editar_perfil' %}" class="text-gray-700 block hover:bg-teal-50 hover:text-teal-700 px-3 py-2 rounded-md text-base font-medium transition">
                         <i class="bi bi-person mr-2"></i> Mi Perfil
                     </a>
-                    <a href="{% url 'mascotas:mis_publicaciones' %}" class="text-white block hover:bg-orange-700 px-3 py-2 rounded-md text-base font-medium">
+                    <a href="{% url 'mascotas:mis_publicaciones' %}" class="text-gray-700 block hover:bg-teal-50 hover:text-teal-700 px-3 py-2 rounded-md text-base font-medium transition">
                         <i class="bi bi-box-seam mr-2"></i> Mis Publicaciones
                     </a>
-                    <a href="{% url 'mascotas:solicitudes_recibidas' %}" class="text-white block hover:bg-orange-700 px-3 py-2 rounded-md text-base font-medium">
-                        <i class="bi bi-bell mr-2 text-green-600"></i> Solicitudes (1)
+                    <a href="{% url 'mascotas:solicitudes_recibidas' %}" class="text-gray-700 block hover:bg-teal-50 hover:text-teal-700 px-3 py-2 rounded-md text-base font-medium transition">
+                        <i class="bi bi-bell mr-2 text-teal-600"></i> Solicitudes (1)
                     </a>
                     <form method="post" action="{% url 'logout' %}" class="block">
-    {% csrf_token %}
-    <button type="submit" class="w-full text-left text-red-300 block hover:bg-orange-700 px-3 py-2 rounded-md text-base font-medium" style="border: none; background: none;">
-        <i class="bi bi-box-arrow-right mr-2"></i> Cerrar Sesión
-    </button>
-</form>
+                        {% csrf_token %}
+                        <button type="submit" class="w-full text-left text-red-600 block hover:bg-red-50 px-3 py-2 rounded-md text-base font-medium transition" style="border: none; background: none;">
+                            <i class="bi bi-box-arrow-right mr-2"></i> Cerrar Sesión
+                        </button>
+                    </form>
                 </div>
                 
                 {% else %}
-                <div class="pt-2 border-t border-orange-700 space-y-1">
-                    <a href="{% url 'login' %}" class="text-white block hover:bg-orange-700 px-3 py-2 rounded-md text-base font-medium">Iniciar Sesión</a>
-                    <a href="{% url 'signup' %}" class="bg-yellow-400 text-orange-800 block hover:bg-yellow-500 px-3 py-2 rounded-md text-base font-bold transition">Registrarse</a>
+                <div class="pt-2 border-t border-gray-200 space-y-1">
+                    <a href="{% url 'login' %}" class="text-gray-700 block hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium">Iniciar Sesión</a>
+                    <a href="{% url 'signup' %}" class="bg-teal-500 text-white block hover:bg-teal-600 px-3 py-2 rounded-md text-base font-bold transition shadow-sm">Registrarse</a>
                 </div>
                 {% endif %}
 
-                <div class="border-t border-orange-700 pt-2 space-y-1">
-                    <a href="{% url 'mascotas:listado_perros' %}" class="text-white block hover:bg-orange-700 px-3 py-2 rounded-md text-base font-medium">Perros</a>
-                    <a href="{% url 'mascotas:listado_gatos' %}" class="text-white block hover:bg-orange-700 px-3 py-2 rounded-md text-base font-medium">Gatos</a>
-                    <a href="{% url 'mascotas:publicar_mascota' %}" class="text-white block hover:bg-orange-700 px-3 py-2 rounded-md text-base font-medium">Publicar Mascota</a>
+                <div class="border-t border-gray-200 pt-2 space-y-1">
+                    <a href="{% url 'mascotas:listado_perros' %}" class="text-gray-700 block hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium">Perros</a>
+                    <a href="{% url 'mascotas:listado_gatos' %}" class="text-gray-700 block hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium">Gatos</a>
+                    <a href="{% url 'mascotas:publicar_mascota' %}" class="text-gray-700 block hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium">Publicar Mascota</a>
                 </div>
             </div>
         </div>
@@ -123,12 +139,12 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // --- Lógica del menú móvil (mobile-menu)
             const openButton = document.getElementById('mobile-menu-button');
             const menu = document.getElementById('mobile-menu');
             const overlay = document.getElementById('mobile-menu-overlay');
             const menuIcon = document.getElementById('mobile-menu-icon');
             
-            // Lógica de transición para ABRIR
             function openMobileMenu() {
                 menu.classList.remove('translate-x-full');
                 overlay.classList.remove('hidden');
@@ -137,7 +153,6 @@
                 menuIcon.classList.add('bi-x-lg');
             }
 
-            // Lógica de transición para CERRAR
             function closeMobileMenu() {
                 menu.classList.add('translate-x-full');
                 overlay.classList.add('hidden');
@@ -146,7 +161,6 @@
                 menuIcon.classList.add('bi-list');
             }
 
-            // Manejar click en el botón de hamburguesa/cerrar
             openButton.addEventListener('click', function () {
                 if (menu.classList.contains('translate-x-full')) {
                     openMobileMenu();
@@ -155,33 +169,54 @@
                 }
             });
 
-            // Cerrar menú al hacer click en el overlay
             overlay.addEventListener('click', closeMobileMenu);
             
-            // Lógica del menú desplegable de escritorio
+            // --- Lógica del menú desplegable de escritorio (user-menu-desktop)
             const userMenuButton = document.getElementById('user-menu-button-desktop');
             const userMenuDropdown = document.getElementById('user-menu-dropdown-desktop');
 
             if (userMenuButton && userMenuDropdown) {
-                userMenuButton.addEventListener('click', function (e) {
-                    e.stopPropagation();
+                // Función para alternar el menú desplegable
+                function toggleUserMenu(e) {
+                    if (e) e.stopPropagation();
                     userMenuDropdown.classList.toggle('hidden');
-                });
+                    // Actualizar el estado ARIA
+                    const isExpanded = userMenuButton.getAttribute('aria-expanded') === 'true' || false;
+                    userMenuButton.setAttribute('aria-expanded', !isExpanded);
+                }
 
+                userMenuButton.addEventListener('click', toggleUserMenu);
+
+                // Cerrar menú al hacer click fuera
                 document.addEventListener('click', function (event) {
-                    if (!userMenuButton.contains(event.target) && !userMenuDropdown.contains(event.target)) {
+                    if (!userMenuDropdown.classList.contains('hidden') && 
+                        !userMenuButton.contains(event.target) && 
+                        !userMenuDropdown.contains(event.target)) {
                         userMenuDropdown.classList.add('hidden');
+                        userMenuButton.setAttribute('aria-expanded', 'false');
+                    }
+                });
+                
+                // Cerrar con tecla Escape
+                document.addEventListener('keydown', function(event) {
+                    if (event.key === 'Escape' && !userMenuDropdown.classList.contains('hidden')) {
+                        toggleUserMenu();
                     }
                 });
             }
         });
     </script>
-    <main class="flex-grow py-8 px-4 sm:px-6 lg:px-8"><div class="container mx-auto">{% block content %}{% endblock %}</div></main>
+    
+    <main class="flex-grow py-8"> {# Añadido padding vertical aquí para separación #}
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8"> {# Contenedor con padding responsive #}
+            {% block content %}{% endblock %}
+        </div>
+    </main>
 
     <footer class="bg-gray-800 text-white mt-auto">
-        <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 text-center">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center"> {# Ajustado padding vertical #}
             <p>&copy; 2025 Huellas Felices. Proyecto Semestral de Django.</p>
-            <p class="mt-1 text-red-400 font-semibold">❤️ ¡Adopta, no compres!</p>
+            <p class="mt-1 text-teal-400 font-semibold">❤️ ¡Adopta, no compres!</p> {# Teal en el corazón #}
         </div>
     </footer>
 
