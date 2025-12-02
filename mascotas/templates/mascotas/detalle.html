@@ -1,142 +1,152 @@
 {% extends 'mascotas/base.html' %}
 {% load static %}
-{% load widget_tweaks %} {% block title %}Detalle: {{ mascota.nombre }}{% endblock %}
+{% load widget_tweaks %}
+
+{% block title %}Detalle: {{ mascota.nombre }}{% endblock %}
 
 {% block content %}
-<div class="flex flex-wrap lg:flex-nowrap gap-8">
-    
-    <div class="w-full lg:w-7/12">
-        <h1 class="text-4xl font-extrabold text-gray-800">{{ mascota.nombre }}</h1>
-        <div class="mb-4 space-x-2">
-            <span class="inline-block bg-indigo-500 text-white text-xs font-semibold px-2 py-1 rounded-full">{{ mascota.get_especie_display }}</span>
-            <span class="inline-block bg-gray-500 text-white text-xs font-semibold px-2 py-1 rounded-full">{{ mascota.get_tamano_display }}</span>
-            <span class="inline-block bg-sky-500 text-white text-xs font-semibold px-2 py-1 rounded-full">{{ mascota.get_genero_display }}</span>
-            <span class="inline-block bg-orange-500 text-white text-xs font-semibold px-2 py-1 rounded-full">{{ mascota.get_edad_display }}</span>
-            <span class="inline-block bg-fuchsia-600 text-white text-xs font-semibold px-2 py-1 rounded-full"><i class="bi bi-geo-alt"></i> {{ mascota.get_region_display }}</span>
-        </div>
-        
-        <img src="{{ mascota.imagen.url }}" class="w-full h-auto rounded-lg shadow-lg" alt="{{ mascota.nombre }}">
 
-        {% if user.is_authenticated and user == mascota.publicado_por %}
-            <div class="mt-4 flex space-x-3 p-4 border border-gray-200 rounded-lg bg-gray-50">
-                <a href="{% url 'mascotas:editar_mascota' pk=mascota.pk %}" class="px-4 py-2 bg-blue-600 text-white font-bold rounded-md hover:bg-blue-700 transition duration-150">
-                    <i class="bi bi-pencil"></i> Editar Publicación
-                </a>
-                
-                <a href="{% url 'mascotas:eliminar_mascota' pk=mascota.pk %}" class="px-4 py-2 bg-red-600 text-white font-bold rounded-md hover:bg-red-700 transition duration-150">
-                    <i class="bi bi-trash"></i> Eliminar Publicación
-                </a>
-            </div>
-            
-            <div class="mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-500 rounded-lg">
-                <h3 class="text-xl font-semibold text-yellow-800 mb-3">Gestión Rápida de Estado:</h3>
-                
-                <div class="flex flex-wrap gap-2">
-                    {% if mascota.estado_adopcion != 'D' %}
-                    <a href="{% url 'mascotas:cambiar_estado' pk=mascota.pk estado='D' %}" 
-                       class="px-4 py-2 text-sm bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
-                       Marcar como Disponible
-                    </a>
-                    {% endif %}
-                    
-                    {% if mascota.estado_adopcion != 'P' %}
-                    <a href="{% url 'mascotas:cambiar_estado' pk=mascota.pk estado='P' %}" 
-                       class="px-4 py-2 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
-                       Marcar como Pendiente
-                    </a>
-                    {% endif %}
-                    
-                    {% if mascota.estado_adopcion != 'A' %}
-                    <a href="{% url 'mascotas:cambiar_estado' pk=mascota.pk estado='A' %}" 
-                       class="px-4 py-2 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
-                       Marcar como Adoptado
-                    </a>
-                    {% endif %}
-                </div>
-            </div>
-                    {% endif %}
-        
-        <h3 class="mt-6 text-2xl font-semibold text-gray-700">Historia y Personalidad</h3>
-        <p class="mt-2 text-gray-600 whitespace-pre-line">{{ mascota.descripcion|linebreaks }}</p>
+<div class="flex flex-wrap lg:flex-nowrap gap-10">
 
-<div class="bg-white p-6 rounded-lg shadow-xl mt-6">
-    <h3 class="text-2xl font-bold mb-4 text-orange-600">
-        <i class="bi bi-chat-heart-fill mr-2"></i> ¡Quiero Adoptar a {{ mascota.nombre }}!
-    </h3>
-    
-    {% if mascota.publicado_por == user %}
-        <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4" role="alert">
-            <p class="font-bold">Es tu publicación.</p>
-            <p>No puedes solicitar adoptar tu propia mascota. Usa los botones de edición de arriba.</p>
-        </div>
-    {% elif mascota.estado_adopcion != 'D' %}
-        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
-            <p class="font-bold">Esta mascota ya no está disponible.</p>
-            <p>Estado actual: {{ mascota.get_estado_adopcion_display }}.</p>
-        </div>
-    {% else %}
-        <p class="mb-4 text-gray-600">Completa este formulario para enviarle un mensaje al publicador.</p>
-        
-        <form method="post">
-            {% csrf_token %}
-            
-            {% for field in form %}
-                <div class="mb-3">
-                    <label for="{{ field.id_for_label }}" class="form-label font-semibold text-gray-700">{{ field.label }}</label>
-                    {{ field|add_class:"w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500" }}
-                    {% for error in field.errors %}
-                        <div class="text-red-500 text-sm">{{ error }}</div>
-                    {% endfor %}
-                    {% if field.help_text %}
-                        <div class="text-xs text-gray-500 mt-1">{{ field.help_text }}</div>
-                    {% endif %}
-                </div>
-            {% endfor %}
-            
-            <button type="submit" class="w-full bg-orange-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-orange-600 transition shadow mt-3">
-                Enviar Solicitud
-            </button>
-        </form>
-    {% endif %}
-</div>
-        <h3 class="mt-6 text-2xl font-semibold text-gray-700">Datos Rápidos</h3>
-        <ul class="border border-gray-200 rounded-lg divide-y divide-gray-200">
-            <li class="p-3 bg-white flex justify-between">
-                <strong class="text-gray-600">Raza:</strong> 
-                <span>{{ mascota.raza }}</span>
-            </li>
-            <li class="p-3 bg-gray-50 flex justify-between">
-                <strong class="text-gray-600">Edad:</strong> 
-                <span>{{ mascota.get_edad_display }}</span>
-            </li>
-            <li class="p-3 bg-white flex justify-between">
-                <strong class="text-gray-600">Provincia:</strong> 
-                <span>{{ mascota.get_region_display }}</span>
-            </li>
-            <li class="p-3 bg-gray-50 flex justify-between">
-                <strong class="text-gray-600">Estado:</strong> 
-                <span class="px-3 py-1 bg-green-500 text-white text-sm font-semibold rounded-full">{{ mascota.get_estado_adopcion_display }}</span>
-            </li>
-            <li class="p-3 bg-white flex justify-between">
-                <strong class="text-gray-600">Publicado:</strong> 
-                <span>{{ mascota.fecha_publicacion|date:"d M, Y" }}</span>
-            </li>
-        </ul>
-    </div>
+    <!-- IZQUIERDA -->
+    <div class="w-full lg:w-7/12">
 
-    <div class="w-full lg:w-5/12">
-        <div class="sticky top-20 bg-white p-6 rounded-lg shadow-xl">
-            <h4 class="text-2xl font-bold text-center text-gray-800 border-b pb-3 mb-4">¡Quiero Adoptar a {{ mascota.nombre }}!</h4>
-            <p class="text-gray-500 text-sm">
-                Esta mascota ha sido publicada por: <strong class="text-gray-700">{{ mascota.publicado_por.username }}</strong>. 
-                Por favor, utiliza el siguiente formulario para contactar al publicador y comenzar el proceso de adopción.
-            </p>
-            
-                        <a href="https://wa.me/XXXXXXXXXX" target="_blank" class="block text-center mt-4 px-4 py-3 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 transition duration-150">
-                <i class="bi bi-whatsapp"></i> Contactar por WhatsApp
-            </a>
-        </div>
-    </div>
+        <!-- Nombre -->
+        <h1 class="text-4xl font-extrabold text-gray-800 mb-2 tracking-tight">
+            {{ mascota.nombre }}
+        </h1>
+        
+        <!-- Chips -->
+        <div class="flex flex-wrap gap-2 mb-5">
+            <span class="px-3 py-1 bg-indigo-500 text-white text-xs font-semibold rounded-full shadow-sm">{{ mascota.get_especie_display }}</span>
+            <span class="px-3 py-1 bg-gray-600 text-white text-xs font-semibold rounded-full shadow-sm">{{ mascota.get_tamano_display }}</span>
+            <span class="px-3 py-1 bg-sky-500 text-white text-xs font-semibold rounded-full shadow-sm">{{ mascota.get_genero_display }}</span>
+            <span class="px-3 py-1 bg-orange-500 text-white text-xs font-semibold rounded-full shadow-sm">{{ mascota.get_edad_display }}</span>
+            <span class="px-3 py-1 bg-fuchsia-600 text-white text-xs font-semibold rounded-full shadow-sm">
+                <i class="bi bi-geo-alt"></i> {{ mascota.get_region_display }}
+            </span>
+        </div>
+
+        <!-- Imagen -->
+        <div class="overflow-hidden rounded-2xl shadow-xl">
+            <img src="{{ mascota.imagen.url }}" alt="{{ mascota.nombre }}" class="w-full object-cover">
+        </div>
+
+        <!-- Acciones del Publicador -->
+        {% if user.is_authenticated and user == mascota.publicado_por %}
+        <div class="mt-5 p-5 rounded-xl bg-gray-50 border border-gray-200 shadow-md space-y-4">
+
+            <h3 class="font-bold text-gray-700 text-lg">Acciones de Publicador</h3>
+
+            <div class="flex flex-wrap gap-3">
+                <a href="{% url 'mascotas:editar_mascota' pk=mascota.pk %}" 
+                   class="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition">
+                    <i class="bi bi-pencil"></i> Editar
+                </a>
+
+                <a href="{% url 'mascotas:eliminar_mascota' pk=mascota.pk %}" 
+                   class="px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition">
+                    <i class="bi bi-trash"></i> Eliminar
+                </a>
+            </div>  
+
+        </div>
+        {% endif %}
+
+        <!-- Historia -->
+        <h3 class="mt-8 text-2xl font-bold text-gray-800">Historia y Personalidad</h3>
+        <p class="mt-2 text-gray-600 leading-relaxed whitespace-pre-line">
+            {{ mascota.descripcion|linebreaks }}
+        </p>
+
+        <!-- Datos Rápidos -->
+        <h3 class="mt-8 text-2xl font-bold text-gray-800">Ficha Técnica</h3>
+
+        <ul class="mt-3 bg-white shadow-lg border border-gray-200 rounded-xl divide-y">
+            <li class="p-4 flex justify-between">
+                <span class="text-gray-600 font-semibold">Raza:</span>
+                <span>{{ mascota.raza }}</span>
+            </li>
+            <li class="p-4 bg-gray-50 flex justify-between">
+                <span class="text-gray-600 font-semibold">Edad:</span>
+                <span>{{ mascota.get_edad_display }}</span>
+            </li>
+            <li class="p-4 flex justify-between">
+                <span class="text-gray-600 font-semibold">Provincia:</span>
+                <span>{{ mascota.get_region_display }}</span>
+            </li>
+            <li class="p-4 bg-gray-50 flex justify-between">
+                <span class="text-gray-600 font-semibold">Estado:</span>
+                <span class="px-3 py-1 bg-green-500 text-white text-xs rounded-full font-semibold">
+                    {{ mascota.get_estado_adopcion_display }}
+                </span>
+            </li>
+            <li class="p-4 flex justify-between">
+                <span class="text-gray-600 font-semibold">Publicado:</span>
+                <span>{{ mascota.fecha_publicacion|date:"d M, Y" }}</span>
+            </li>
+        </ul>
+
+    </div>
+
+    <!-- DERECHA -->
+    <div class="w-full lg:w-5/12">
+        <div class="sticky top-20 bg-white p-7 rounded-2xl shadow-2xl border border-gray-200">
+
+            <h4 class="text-2xl font-bold text-center text-gray-800 border-b pb-4">
+                ¿Quieres adoptar a {{ mascota.nombre }}?
+            </h4>
+
+            <p class="text-gray-600 text-sm mt-3">
+                Esta mascota ha sido publicada por: 
+                <strong class="text-gray-800">{{ mascota.publicado_por.username }}</strong> <br>
+                Por favor, utiliza el siguiente formulario para contactar al publicador y comenzar el proceso de adopción.
+            </p>
+
+            {% with telefono_raw=mascota.publicado_por.profile.telefono_whatsapp %}
+    {% if mascota.estado_adopcion == 'D' and telefono_raw %}
+        
+        {# 1. Limpiamos el número eliminando todos los caracteres especiales que pueden causar el error 404 #}
+        {% with telefono_limpio=telefono_raw|striptags|cut:" "|cut:"-"|cut:"+"|cut:"("|cut:")" %}
+        
+        {# 2. Definimos el mensaje para URL #}
+        {% with mensaje="Hola, estoy interesado en adoptar a "|add:mascota.nombre|add:". (Visto en Huellas Felices)"|urlencode %}
+        
+        <a href="https://wa.me/{{ telefono_limpio }}?text={{ mensaje }}" 
+            target="_blank" 
+            class="mt-5 block text-center py-3 bg-green-500 text-white font-bold rounded-lg shadow-md hover:bg-green-600 transition">
+            <i class="bi bi-whatsapp"></i> Contactar por WhatsApp
+        </a>
+        
+        {% endwith %}
+        {% endwith %}
+
+    {# ... (Resto de la lógica condicional, elif y else, permanece igual) ... #}
+
+    {% endif %}
+{% endwith %}
+
+        </div>
+    </div>
 
 </div>
+
+<!-- BOTÓN DE REGRESO (FINAL DE TODO) -->
+<div class="text-center mt-10 mb-10">
+
+    {% if mascota.especie|lower == "perro" %}
+        <a href="{% url 'mascotas:listado_perros' %}"
+           class="inline-flex items-center gap-2 px-6 py-3 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition shadow">
+            <i class="bi bi-arrow-left"></i> Regresar a Perros
+        </a>
+
+    {% elif mascota.especie|lower == "gato" %}
+        <a href="{% url 'mascotas:listado_gatos' %}"
+           class="inline-flex items-center gap-2 px-6 py-3 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition shadow">
+            <i class="bi bi-arrow-left"></i> Regresar a Gatos
+        </a>
+    {% endif %}
+
+</div>
+
 {% endblock %}

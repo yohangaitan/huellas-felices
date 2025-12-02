@@ -19,14 +19,19 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from mascotas.views import SignUpView
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
+    # Rutas de autenticación por defecto
+    path('accounts/', include('django.contrib.auth.urls')),
+
+    # Tu login personalizado en /login/
+    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
+
+    path('signup/', SignUpView.as_view(), name='signup'),
+
     path('admin/', admin.site.urls),
     path('', include('mascotas.urls')),
-    # Incluir las URLs de Autenticación de Django
-    # Mapea todas las rutas de auth (login, logout, etc.) bajo el prefijo 'login/'
-    path('', include('django.contrib.auth.urls')),
-    path('signup/', SignUpView.as_view(), name='signup'),
     path('blog/', include('blog.urls')),
 ]
 

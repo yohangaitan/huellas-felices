@@ -16,7 +16,7 @@
         {% endif %}
     </h1>
 
-    {# Sección de Filtros y Búsqueda (Mejorada) #}
+    {# Sección de Filtros y Búsqueda (Actualizada a Teal) #}
     <div class="mb-10 p-4 lg:p-6 bg-white border border-gray-200 rounded-xl shadow-lg">
         <h4 class="text-xl font-bold mb-4 text-gray-700">Filtrar y Buscar</h4>
         
@@ -26,12 +26,12 @@
             <div class="lg:col-span-2">
                 <input type="text" name="q" placeholder="Buscar por nombre o raza..." 
                         value="{{ query }}" 
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 shadow-sm">
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500 shadow-sm">
             </div>
 
-            {# Selects (Tamaño, Edad, Provincia) #}
+            {# Selects (Tamaño, Edad, Provincia) - Actualizados a Teal #}
             <div>
-                <select name="tamano" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                <select name="tamano" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500">
                     <option value="">Tamaño</option>
                     {% for key, value in TAMANO_CHOICES %}
                         <option value="{{ key }}" {% if key == tamano_seleccionado %}selected{% endif %}>{{ value }}</option>
@@ -40,7 +40,7 @@
             </div>
 
             <div>
-                <select name="edad" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                <select name="edad" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500">
                     <option value="">Edad</option>
                     {% for key, value in EDAD_CHOICES %}
                         <option value="{{ key }}" {% if key == edad_seleccionada %}selected{% endif %}>{{ value }}</option>
@@ -48,8 +48,29 @@
                 </select>
             </div>
 
+            {# CAMBIO 2: NUEVO: Filtro por Sexo (Género) #}
+            <div> 
+                {# Nota: Usamos 'genero' como nombre para coincidir con tu campo en models.py #}
+                <select name="genero" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500">
+                    <option value="">Genero</option>
+                    {% for key, value in SEXO_CHOICES %}
+                        <option value="{{ key }}" {% if key == sexo_seleccionado %}selected{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            {# CAMBIO 2: NUEVO: Filtro por Color #}
             <div>
-                <select name="region" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                <select name="color" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500">
+                    <option value="">Color</option>
+                    {% for key, value in COLOR_CHOICES %}
+                        <option value="{{ key }}" {% if key == color_seleccionado %}selected{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <select name="region" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500">
                     <option value="">Provincia</option>
                     {% for key, value in REGION_CHOICES %}
                         <option value="{{ key }}" {% if key == region_seleccionada %}selected{% endif %}>{{ value }}</option>
@@ -57,12 +78,12 @@
                 </select>
             </div>
             
-            {# Botón Aplicar #}
-            <button type="submit" class="w-full px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition shadow-md">
+            {# Botón Aplicar (Actualizado a Teal) #}
+            <button type="submit" class="w-full px-6 py-2 bg-teal-600 text-white font-semibold rounded-lg hover:bg-teal-700 transition shadow-md">
                 <i class="bi bi-funnel mr-1"></i> Aplicar
             </button>
             
-            {# Botón Limpiar (Solo aparece si hay filtros aplicados) #}
+            {# Botón Limpiar #}
             {% if query or tamano_seleccionado or edad_seleccionada or region_seleccionada %}
                 <a href="." class="w-full px-6 py-2 bg-gray-400 text-white font-semibold rounded-lg hover:bg-gray-500 transition shadow-md text-center">
                     Limpiar
@@ -72,12 +93,11 @@
     </div>
 
 
-    {# LISTADO DE MASCOTAS - ¡Transformado a Tailwind GRID! #}
+    {# LISTADO DE MASCOTAS - Tarjetas con estilo Teal #}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
         
         {% for mascota in mascotas_disponibles %}
         
-        {# Estructura de la Tarjeta (Reemplaza Card, Col, etc. de Bootstrap) #}
         <div class="bg-white rounded-xl shadow-2xl overflow-hidden transform hover:scale-[1.03] transition duration-300 ease-in-out border border-gray-100 flex flex-col">
             
             {# Imagen #}
@@ -92,15 +112,15 @@
                 
                 {# Título/Nombre #}
                 <h2 class="text-xl font-bold text-gray-900 mb-2 truncate">
-                    <a href="{% url 'mascotas:detalle_mascota' pk=mascota.pk %}" class="hover:text-indigo-600 transition">
+                    <a href="{% url 'mascotas:detalle_mascota' pk=mascota.pk %}" class="hover:text-teal-600 transition"> {# Enlace hover Teal #}
                         {{ mascota.nombre }}
                     </a>
                 </h2>
                 
                 {# Etiquetas (Especie y Tamaño) #}
                 <div class="flex flex-wrap gap-2 text-xs mb-3">
-                    {# Especie (Índigo) #}
-                    <span class="px-2 py-1 rounded-full bg-indigo-100 text-indigo-800 font-medium">
+                    {# Especie (Teal) #}
+                    <span class="px-2 py-1 rounded-full bg-teal-100 text-teal-800 font-medium">
                         {{ mascota.get_especie_display }}
                     </span>
                     {# Tamaño (Gris) #}
@@ -113,12 +133,12 @@
                 <p class="text-sm text-gray-500 mb-4 flex-grow">
                     <span class="font-semibold">{{ mascota.raza }}</span> | {{ mascota.get_edad_display }}
                     <br>
-                    <i class="bi bi-geo-alt-fill mr-1 text-indigo-500"></i> {{ mascota.get_region_display }}
+                    <i class="bi bi-geo-alt-fill mr-1 text-teal-500"></i> {{ mascota.get_region_display }} {# Ícono de Ubicación Teal #}
                 </p>
                 
-                {# Botón de CTA (Se queda en la parte inferior) #}
+                {# Botón de CTA (Actualizado a Teal) #}
                 <a href="{% url 'mascotas:detalle_mascota' pk=mascota.pk %}" 
-                   class="mt-auto w-full block text-center py-2 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition shadow-md">
+                   class="mt-auto w-full block text-center py-2 bg-teal-600 text-white font-bold rounded-lg hover:bg-teal-700 transition shadow-md">
                     ¡Me Interesa!
                 </a>
             </div>

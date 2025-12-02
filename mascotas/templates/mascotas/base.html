@@ -61,9 +61,7 @@
                             <a href="{% url 'mascotas:mis_publicaciones' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-teal-700 transition" role="menuitem">
                                 <i class="bi bi-box-seam mr-2"></i> Mis Publicaciones
                             </a>
-                            <a href="{% url 'mascotas:solicitudes_recibidas' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-teal-700 transition" role="menuitem">
-                                <i class="bi bi-bell mr-2 text-teal-600"></i> Solicitudes (1)
-                            </a>
+                            
                             <div class="border-t border-gray-100 my-1"></div>
                             <form method="post" action="{% url 'logout' %}" class="block">
                                 {% csrf_token %}
@@ -75,7 +73,7 @@
                     </div>
                     {% else %}
                     <div class="hidden md:flex space-x-2">
-                        <a href="{% url 'login' %}" class="text-white hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">Iniciar Sesión</a>
+                        <a href="/accounts/login/" class="text-white hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">Iniciar Sesión</a>
                         <a href="{% url 'signup' %}" class="text-white bg-teal-500 hover:bg-teal-600 px-3 py-2 rounded-md text-sm font-medium transition shadow-sm">Registrarse</a>
                     </div>
                     {% endif %}
@@ -110,9 +108,6 @@
                     <a href="{% url 'mascotas:mis_publicaciones' %}" class="text-gray-700 block hover:bg-teal-50 hover:text-teal-700 px-3 py-2 rounded-md text-base font-medium transition">
                         <i class="bi bi-box-seam mr-2"></i> Mis Publicaciones
                     </a>
-                    <a href="{% url 'mascotas:solicitudes_recibidas' %}" class="text-gray-700 block hover:bg-teal-50 hover:text-teal-700 px-3 py-2 rounded-md text-base font-medium transition">
-                        <i class="bi bi-bell mr-2 text-teal-600"></i> Solicitudes (1)
-                    </a>
                     <form method="post" action="{% url 'logout' %}" class="block">
                         {% csrf_token %}
                         <button type="submit" class="w-full text-left text-red-600 block hover:bg-red-50 px-3 py-2 rounded-md text-base font-medium transition" style="border: none; background: none;">
@@ -123,7 +118,7 @@
                 
                 {% else %}
                 <div class="pt-2 border-t border-gray-200 space-y-1">
-                    <a href="{% url 'login' %}" class="text-gray-700 block hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium">Iniciar Sesión</a>
+                    <a href="/accounts/login/" class="text-gray-700 block hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium">Iniciar Sesión</a>
                     <a href="{% url 'signup' %}" class="bg-teal-500 text-white block hover:bg-teal-600 px-3 py-2 rounded-md text-base font-bold transition shadow-sm">Registrarse</a>
                 </div>
                 {% endif %}
@@ -132,6 +127,7 @@
                     <a href="{% url 'mascotas:listado_perros' %}" class="text-gray-700 block hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium">Perros</a>
                     <a href="{% url 'mascotas:listado_gatos' %}" class="text-gray-700 block hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium">Gatos</a>
                     <a href="{% url 'mascotas:publicar_mascota' %}" class="text-gray-700 block hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium">Publicar Mascota</a>
+                    <a href="{% url 'blog:listado' %}" class="text-gray-700 block hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium">Blog</a>
                 </div>
             </div>
         </div>
@@ -216,7 +212,7 @@
     <footer class="bg-gray-800 text-white mt-auto">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center"> {# Ajustado padding vertical #}
             <p>&copy; 2025 Huellas Felices. Proyecto Semestral de Django.</p>
-            <p class="mt-1 text-teal-400 font-semibold">❤️ ¡Adopta, no compres!</p> {# Teal en el corazón #}
+            <p class="mt-1 text-teal-400 font-semibold">¡Adopta, no compres!</p> {# Teal en el corazón #}
         </div>
     </footer>
 

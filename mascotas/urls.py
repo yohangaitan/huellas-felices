@@ -18,8 +18,6 @@ urlpatterns = [
     path('<int:pk>/eliminar/', views.MascotaDeleteView.as_view(), name='eliminar_mascota'),
     path('<int:pk>/', views.MascotaDetailView.as_view(), name='detalle_mascota'),
     path('mis-publicaciones/', views.MascotaUserListView.as_view(), name='mis_publicaciones'),
-    path('solicitudes/', views.SolicitudListView.as_view(), name='solicitudes_recibidas'),
     path('cambiar-estado/<int:pk>/<str:estado>/', views.cambiar_estado_mascota, name='cambiar_estado'), 
     path('perfil/', views.ProfileUpdateView.as_view(), name='editar_perfil'),
-    path('mis-solicitudes-enviadas/', views.MisSolicitudesEnviadasView.as_view(), name='mis_solicitudes_enviadas'),
 ]

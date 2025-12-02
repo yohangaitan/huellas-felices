@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
-# Eliminamos la importación de reverse ya que no se usa en este archivo
+from django.db.models import Q
 
 # --- Opciones de Choices (Fuera de las clases si son compartidas) ---
 # Aunque tienes duplicadas estas en Mascota, las mantendré comentadas para no romper nada
@@ -9,6 +9,15 @@ from django.conf import settings
 # Create your models here.
 class Mascota(models.Model):
     # --- 1. Definición de Choices (Internas) ---
+    COLOR_CHOICES = [
+        ('NEGRO', 'Negro'),
+        ('BLANCO', 'Blanco'),
+        ('ATIGRADO', 'Atigrado'),
+        ('CAFE', 'Café/Marrón'),
+        ('GRIS', 'Gris'),
+        ('OTRO', 'Otro/Variado'),
+    ]
+
     TAMANO_CHOICES = [
         ('P', 'Pequeño'),
         ('M', 'Mediano'),
@@ -65,11 +74,12 @@ class Mascota(models.Model):
     edad = models.CharField(max_length=1, choices=EDAD_CHOICES)
     region = models.CharField(max_length=50, choices=REGION_CHOICES)
     estado_adopcion = models.CharField(max_length=1, choices=ESTADO_CHOICES, default='D')
+    color = models.CharField(max_length=50, choices=COLOR_CHOICES, default='OTRO', blank=True)
     
     # Otros campos
     raza = models.CharField(max_length=100, default='Mestizo', blank=True)
     descripcion = models.TextField()
-    imagen = models.ImageField(upload_to='mascotas_fotos/', blank=True, null=True)
+    imagen = models.ImageField(upload_to='mascotas_fotos/')
     fecha_publicacion = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
