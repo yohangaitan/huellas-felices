@@ -1,81 +1,18 @@
-# 🐾 Huellas Felices
-
-Un sistema de gestión de mascotas en adopción desarrollado con Django y Tailwind CSS.
-
----
-
-## 🚀 Funcionalidades Principales (Estado Actual)
-
-Este proyecto implementa las funcionalidades base de un sitio de adopción, con un enfoque en la gestión segura por parte del publicador:
-
-1.  **Publicación y Listado de Mascotas:** Creación, visualización y filtrado básico de mascotas.
-2.  **Gestión Segura (CRUD):**
-    * **Edición y Eliminación Segura:** Solo el usuario que publicó una mascota puede editarla o eliminarla (protegido con `UserPassesTestMixin`).
-3.  **Gestión de Perfil:** Los usuarios pueden crear y editar su información de contacto (integración con el modelo `UserProfile`).
-4.  **Sistema de Solicitudes:**
-    * Los adoptantes pueden enviar formularios de interés por cada mascota.
-    * Los publicadores tienen un panel de **"Solicitudes Recibidas"** que muestra los datos de contacto del adoptante.
-    * **Notificaciones:** El menú de usuario muestra el conteo total de solicitudes pendientes (`Solicitudes (X)`).
-
----
-
-## ⚙️ Configuración y Ejecución del Proyecto
-
-Sigue estos pasos para descargar, configurar el entorno y ejecutar la aplicación web en tu máquina local.
-
-### 1. Requisitos Previos
-
-* **Python 3.8+** (Recomendado Python 3.10 o superior)
-* **Git**
-
-### 2. Clonar el Repositorio
-
-Abre tu terminal y clona el proyecto:
-
-```bash
-git clone [https://github.com/yohangaitan/huellas-felices.git](https://github.com/yohangaitan/huellas-felices.git)
+🏡 Huellas Felices: Plataforma de Adopción de MascotasHuellas Felices es una aplicación web completa desarrollada con Django que simplifica y digitaliza el proceso de publicación y adopción de mascotas. Nuestro objetivo es crear un puente intuitivo y moderno entre las personas que buscan un nuevo miembro peludo para su familia y los usuarios que necesitan encontrar un hogar seguro y amoroso para sus animales.✨ Características Clave del ProyectoGestión de Usuarios y Perfiles: Los usuarios pueden registrarse y gestionar su información personal, así como sus publicaciones activas.Publicación Detallada de Mascotas: Permite a los usuarios publicar mascotas especificando tipo (perro/gato), tamaño, edad, provincia, descripción, e imágenes.Seguimiento de Estado: Cada mascota publicada tiene un estado claro (Disponible, Adoptado, etc.) que puede ser actualizado por el publicador.Navegación Intuitiva: Listado separado por categorías (Perros y Gatos) y una página de detalle completa por cada mascota.Integración de Contacto: Facilita la comunicación directa entre el interesado en adoptar y el publicador de la mascota a través de enlaces de contacto.Blog de Contenido (Opcional): Incluye una sección de blog para compartir noticias, consejos de cuidado y concienciación sobre la adopción.💻 Tecnologías UtilizadasCategoríaTecnologíaUso PrincipalBackendPython 3.x, Django 5.xLógica de negocio, ORM, Vistas, Autenticación.FrontendHTML5, Tailwind CSSEstilización, diseño responsivo y componentes modernos.Base de DatosSQLite3 (Desarrollo)Almacenamiento local y gestión de modelos.EstilosBootstrap Icons, Widget TweaksIconografía y renderizado de formularios.🚀 Puesta en Marcha (Instalación Local)Sigue estos pasos para descargar, configurar y ejecutar el proyecto en tu máquina local.1. Requisitos PreviosNecesitas tener instalado lo siguiente:Python 3.10 o superiorGit2. Clonar el RepositorioAbre tu terminal y descarga el código:Bashgit clone https://github.com/tu-usuario/huellas-felices.git
 cd huellas-felices
-3. Configurar el Entorno Virtual (Recomendado)
-Crea un entorno virtual para aislar las dependencias del proyecto:
-
-Bash
-
-# Crear el entorno virtual
+3. Configurar el EntornoEs crucial crear y activar un entorno virtual (venv) para aislar las librerías del proyecto de las librerías globales de tu sistema.Bash# Crea el entorno virtual
 python -m venv venv
 
-# Activar el entorno virtual (Windows PowerShell)
-.\venv\Scripts\Activate.ps1
-
-# Activar el entorno virtual (Linux/macOS o Git Bash)
+# Activa el entorno virtual
+# En Windows (PowerShell/CMD):
+# .\venv\Scripts\Activate
+# En macOS/Linux:
 source venv/bin/activate
-(Verás (venv) al inicio de tu línea de comandos, indicando que está activo.)
-
-4. Instalar Dependencias de Python
-Instala todas las librerías de Django y paquetes de terceros necesarios, incluyendo django-widget-tweaks para el estilizado de formularios:
-
-Bash
-
-pip install -r requirements.txt 
-# Si no tienes un requirements.txt, usa:
-# pip install django pillow django-widget-tweaks
-5. Configuración de Django
-Aplica las migraciones iniciales para crear la estructura de la base de datos (SQLite por defecto):
-
-Bash
-
+4. Instalación de LibreríasUna vez activado el entorno, se instalarán todas las dependencias de Python listadas en el archivo requirements.txt.Librerías principales que se instalan:Django: El framework web principal.Pillow: Necesario para el manejo y procesamiento de imágenes.django-widget-tweaks: Ayuda a estilizar los formularios de Django con Tailwind CSS.Bashpip install -r requirements.txt
+5. Configurar la Base de Datos y SuperusuarioSe utiliza SQLite, que se configura automáticamente. Solo necesitas aplicar las estructuras de la base de datos (migraciones).Bash# 1. Aplica las migraciones a la base de datos (crea el archivo db.sqlite3)
 python manage.py migrate
-6. Crear Superusuario
-Crea una cuenta de administrador para acceder al panel de gestión (/admin/):
 
-Bash
-
+# 2. Crea un usuario administrador para acceder al /admin/ (Opcional)
 python manage.py createsuperuser
-(Sigue las instrucciones para ingresar un nombre de usuario, email y contraseña.)
-
-7. Ejecutar el Servidor
-Inicia el servidor de desarrollo de Django:
-
-Bash
-
-python manage.py runserver
-El proyecto estará accesible en tu navegador en: http://127.0.0.1:8000/
+▶️ Ejecución del ProyectoPara ver la aplicación en funcionamiento, inicia el servidor de desarrollo de Django:Bashpython manage.py runserver
+La aplicación estará disponible en tu navegador en: http://127.0.0.1:8000/
